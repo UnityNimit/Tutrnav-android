@@ -7,14 +7,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.DiscoverViewHolder> {
 
-    private List<DiscoverModel> discoverList;
+    private List<TuitionModel> list;
+    private OnTuitionClickListener listener;
 
-    public DiscoverAdapter(List<DiscoverModel> discoverList) {
-        this.discoverList = discoverList;
+    public interface OnTuitionClickListener {
+        void onClick(TuitionModel model);
+    }
+
+    public DiscoverAdapter(List<TuitionModel> list, OnTuitionClickListener listener) {
+        this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
@@ -26,19 +33,25 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.Discov
 
     @Override
     public void onBindViewHolder(@NonNull DiscoverViewHolder holder, int position) {
-        // MAGIC LINE: This creates the infinite loop logic
-        int realPosition = position % discoverList.size();
+        // Infinite loop logic
+        TuitionModel item = list.get(position % list.size());
 
-        DiscoverModel item = discoverList.get(realPosition);
         holder.title.setText(item.getTitle());
-        holder.subtitle.setText(item.getSubtitle());
-        holder.image.setImageResource(item.getImageRes());
+        holder.subtitle.setText(item.getSubject() + " | ₹" + item.getFee());
+
+        // Load actual banner from Cloudinary/Firestore URL
+        Glide.with(holder.itemView.getContext())
+                .load(item.getBannerUrl())
+                .placeholder(R.drawable.bg_gradient_overlay)
+                .centerCrop()
+                .into(holder.image);
+
+        holder.itemView.setOnClickListener(v -> listener.onClick(item));
     }
 
     @Override
     public int getItemCount() {
-        // Return a massive number so it feels infinite
-        return Integer.MAX_VALUE;
+        return list == null || list.isEmpty() ? 0 : Integer.MAX_VALUE;
     }
 
     static class DiscoverViewHolder extends RecyclerView.ViewHolder {

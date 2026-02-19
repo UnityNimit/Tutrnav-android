@@ -4,30 +4,74 @@
     package="com.onrender.tutrnav">
 
     <!-- ============================================== -->
-    <!-- PERMISSIONS                                    -->
+    <!-- 1. PERMISSIONS                                 -->
     <!-- ============================================== -->
-    <!-- Required for Firebase and Cloudinary -->
+
+    <!-- Network: Required for Firebase, Cloudinary, and Map Tiles -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- Location: Required for MapsFragment and PickLocationActivity -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Storage: Required for caching Map tiles and picking Profile/Banner images -->
+    <!-- Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Android 12 and below (API 32-) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+
+    <!-- Notifications: Required for Android 13+ to show alerts -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- ============================================== -->
+    <!-- 2. QUERIES (Android 11+ Visibility)            -->
+    <!-- ============================================== -->
+    <queries>
+        <!-- Allows opening Email apps for the "Support" button -->
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+        <!-- Allows opening external Maps (Google Maps/Waze) if needed -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tutrnav"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <!-- Google Play Services Version (Good practice for Firebase) -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <!-- ============================================== -->
-        <!-- 1. ENTRY POINT (SPLASH SCREEN)                 -->
+        <!-- 3. ENTRY POINT                                 -->
         <!-- ============================================== -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tutrnav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,77 +80,97 @@
         </activity>
 
         <!-- ============================================== -->
-        <!-- 2. ONBOARDING & AUTHENTICATION FLOW            -->
+        <!-- 4. ONBOARDING & AUTHENTICATION                 -->
         <!-- ============================================== -->
         <activity
             android:name=".OnboardingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".AuthActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".SignInActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".SignUpActivity"
-            android:exported="false" />
-
-        <!-- ============================================== -->
-        <!-- 3. MAIN DASHBOARD                              -->
-        <!-- ============================================== -->
-        <activity
-            android:name=".StudentHomeActivity"
-            android:exported="false" />
-
-        <!-- ============================================== -->
-        <!-- 4. PROFILE & SETTINGS                          -->
-        <!-- ============================================== -->
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ChangePasswordActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- ============================================== -->
-        <!-- 5. FEATURES (Schedule, Maps, Notifications)    -->
+        <!-- 5. STUDENT FLOW                                -->
         <!-- ============================================== -->
         <activity
+            android:name=".StudentHomeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
             android:name=".ScheduleActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".MapsActivity"
-            android:exported="false" />
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".NotificationsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
-        <!-- 6. NOTIFICATION DETAIL (TRANSPARENT POPUP) -->
         <activity
             android:name=".NotificationDetailActivity"
             android:exported="false"
-            android:theme="@style/Theme.Tutrnav" />
-        <!-- Note: Ensure you have a Transparent theme defined if you want it transparent -->
+            android:screenOrientation="portrait" />
 
-        <!-- Legacy Activity (Optional) -->
+        <!-- ============================================== -->
+        <!-- 6. TEACHER FLOW                                -->
+        <!-- ============================================== -->
+        <!-- adjustResize is CRITICAL here for the Tuition Upload Form -->
+        <activity
+            android:name=".TeacherHomeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- OSM Map for picking location -->
+        <activity
+            android:name=".PickLocationActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- ============================================== -->
+        <!-- 7. SHARED / UTILITY                            -->
+        <!-- ============================================== -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Legacy Activity (Kept to prevent crashes if referenced) -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-
-        <!-- ============================================== -->
-        <!-- CONFIGURATIONS                                 -->
-        <!-- ============================================== -->
-
-        <!-- Google Maps API Key -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
     </application>
 

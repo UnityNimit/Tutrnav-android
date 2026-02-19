@@ -9,78 +9,86 @@
     android:background="#6555C0"
     tools:context=".StudentHomeActivity">
 
-    <!-- ================= 1. HEADER SECTION ================= -->
+    <!-- ================= 1. PREMIUM HEADER SECTION ================= -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#6555C0"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="40dp"
-        android:paddingBottom="24dp"
-        android:elevation="4dp"
+        android:paddingHorizontal="15dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- "Hi" Text -->
-        <TextView
-            android:id="@+id/tvHi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hi "
-            android:textSize="32sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/profileCard"
-            app:layout_constraintBottom_toBottomOf="@id/profileCard"
-            app:layout_constraintEnd_toStartOf="@id/tvName"
-            app:layout_constraintHorizontal_bias="0"/>
-
-        <!-- "Student" Name (Truncates if too long) -->
-        <TextView
-            android:id="@+id/tvName"
+        <!-- Text Grouping (Left Side) -->
+        <LinearLayout
+            android:id="@+id/textGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Student!"
-            android:textSize="32sp"
-            android:textColor="#FFCA28"
-            android:textStyle="bold"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_marginStart="0dp"
+            android:orientation="vertical"
             android:layout_marginEnd="16dp"
-            app:layout_constraintStart_toEndOf="@id/tvHi"
-            app:layout_constraintTop_toTopOf="@id/tvHi"
-            app:layout_constraintBottom_toBottomOf="@id/tvHi"
-            app:layout_constraintEnd_toStartOf="@id/profileCard"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profileCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Subtitle -->
-        <TextView
-            android:id="@+id/tvSubtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Let's find tuitions for you"
-            android:textColor="#D1C4E9"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@id/tvHi"
-            app:layout_constraintStart_toStartOf="@id/tvHi"
-            app:layout_constraintEnd_toEndOf="@id/tvName"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <!-- Profile Image Card -->
-        <androidx.cardview.widget.CardView
+                <!-- ID: tvHi -> Can be hidden or changed to "Hello" -->
+                <TextView
+                    android:id="@+id/tvHi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hi "
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="34sp"
+                    android:fontFamily="sans-serif-light" />
+
+                <!-- ID: tvName -> The main dynamic title (e.g., "Student", "Schedule", "Map") -->
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Student!"
+                    android:textColor="#FFCA28"
+                    android:textSize="34sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- ID: tvSubtitle -> The dynamic subtitle/description -->
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-4dp"
+                android:alpha="0.8"
+                android:letterSpacing="0.02"
+                android:text="Let's find tuitions for you"
+                android:textColor="#D1C4E9"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <!-- Premium Profile Image Card (Right Side) -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/profileCard"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:cardCornerRadius="25dp"
-            app:cardBackgroundColor="#E0E0E0"
-            app:cardElevation="2dp"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            app:cardCornerRadius="34dp"
+            app:cardElevation="8dp"
+            app:strokeColor="#FFFFFF"
+            app:strokeWidth="3dp"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -88,24 +96,21 @@
                 android:id="@+id/imgProfileSmall"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@mipmap/ic_launcher"
                 android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"
                 android:contentDescription="Profile Picture"/>
-        </androidx.cardview.widget.CardView>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ================= 2. CONTENT AREA (ViewPager) ================= -->
-    <!--
-         IMPORTANT:
-         paddingBottom="90dp" and clipToPadding="false" allow the content
-         to scroll BEHIND the floating navbar so the last item isn't hidden.
-    -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingBottom="100dp"
+        android:paddingHorizontal="15dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/headerContainer"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -117,11 +122,11 @@
         android:id="@+id/bottomNavCard"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
         app:cardBackgroundColor="#2D2B45"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="12dp"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -133,7 +138,6 @@
             android:gravity="center"
             android:weightSum="4">
 
-            <!-- Home -->
             <ImageView
                 android:id="@+id/navHome"
                 android:layout_width="0dp"
@@ -142,13 +146,9 @@
                 android:scaleType="centerInside"
                 android:src="@android:drawable/ic_dialog_dialer"
                 app:tint="#FFCA28"
-                android:padding="20dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="Home"/>
+                android:padding="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <!-- Schedule -->
             <ImageView
                 android:id="@+id/navSchedule"
                 android:layout_width="0dp"
@@ -157,13 +157,9 @@
                 android:scaleType="centerInside"
                 android:src="@android:drawable/ic_menu_agenda"
                 app:tint="#5C6BC0"
-                android:padding="20dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="Schedule"/>
+                android:padding="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <!-- Map -->
             <ImageView
                 android:id="@+id/navMap"
                 android:layout_width="0dp"
@@ -172,13 +168,9 @@
                 android:scaleType="centerInside"
                 android:src="@android:drawable/ic_menu_compass"
                 app:tint="#5C6BC0"
-                android:padding="20dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="Map"/>
+                android:padding="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <!-- Notifications -->
             <ImageView
                 android:id="@+id/navNotif"
                 android:layout_width="0dp"
@@ -187,11 +179,8 @@
                 android:scaleType="centerInside"
                 android:src="@android:drawable/ic_popup_reminder"
                 app:tint="#5C6BC0"
-                android:padding="20dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="Notifications"/>
+                android:padding="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

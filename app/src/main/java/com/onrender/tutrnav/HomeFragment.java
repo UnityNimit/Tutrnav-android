@@ -1,17 +1,27 @@
 package com.onrender.tutrnav;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,108 +29,167 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private ViewPager2 vpDiscover;
+    private TabLayout tabLayout;
     private Handler sliderHandler = new Handler(Looper.getMainLooper());
+    private SharedTuitionViewModel viewModel;
+
+    // AESTHETIC CONFIGURATION
+    private static final int AUTO_SLIDE_DURATION = 3500;
+    private static final float SCALE_CENTER = 1.0f;
+    private static final float SCALE_SIDE = 0.90f;
+    private static final float ALPHA_SIDE = 0.7f;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(SharedTuitionViewModel.class);
         vpDiscover = view.findViewById(R.id.vpDiscover);
+        tabLayout = view.findViewById(R.id.tabLayout);
 
-        // 1. Create Data
-        List<DiscoverModel> list = new ArrayList<>();
-        list.add(new DiscoverModel("Physics Masterclass", "By Dr. Verma | ₹800/mo", R.mipmap.ic_launcher));
-        list.add(new DiscoverModel("Learn Guitar", "Rock School | ₹1200/mo", R.mipmap.ic_launcher));
-        list.add(new DiscoverModel("Math Wizards", "Grade 10-12 | ₹600/mo", R.mipmap.ic_launcher));
-        list.add(new DiscoverModel("Coding Bootcamp", "Python & Java | ₹1500/mo", R.mipmap.ic_launcher));
-        list.add(new DiscoverModel("Yoga for Beginners", "Morning Batch | ₹500/mo", R.mipmap.ic_launcher));
+        fetchTuitionsFromFirestore();
 
-        // 2. Setup Infinite Adapter
-        DiscoverAdapter adapter = new DiscoverAdapter(list);
+        return view;
+    }
+
+    private void fetchTuitionsFromFirestore() {
+        FirebaseFirestore.getInstance().collection("tuitions")
+                .limit(10)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<TuitionModel> list = new ArrayList<>();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        TuitionModel model = doc.toObject(TuitionModel.class);
+                        if (model != null) list.add(model);
+                    }
+
+                    if (!list.isEmpty()) {
+                        setupAdapter(list);
+                    }
+                });
+    }
+
+    private void setupAdapter(List<TuitionModel> list) {
+        DiscoverAdapter adapter = new DiscoverAdapter(list, model -> {
+            viewModel.select(model);
+            if (getActivity() instanceof StudentHomeActivity) {
+                ViewPager2 parentVP = getActivity().findViewById(R.id.viewPager);
+                parentVP.setCurrentItem(2, true);
+            }
+        });
+
         vpDiscover.setAdapter(adapter);
 
-        // 3. Set Start Position in the Middle
-        // We start at 1000 so the user can swipe LEFT immediately if they want
-        int startPosition = list.size() * 100;
+        // Infinite Scroll Math
+        int midPoint = Integer.MAX_VALUE / 2;
+        int startPosition = midPoint - (midPoint % list.size());
         vpDiscover.setCurrentItem(startPosition, false);
 
-        // 4. THE STACK TRANSFORMER LOGIC
-        vpDiscover.setOffscreenPageLimit(3); // Keep 3 cards in memory for the stack effect
+        setupViewPagerAesthetics();
+        setupInfiniteDots(list.size());
+
+        sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DURATION);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupViewPagerAesthetics() {
         vpDiscover.setClipToPadding(false);
         vpDiscover.setClipChildren(false);
-        vpDiscover.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        vpDiscover.setOffscreenPageLimit(3);
 
-        vpDiscover.setPageTransformer(new ViewPager2.PageTransformer() {
+        CompositePageTransformer transformer = new CompositePageTransformer();
+        transformer.addTransformer(new MarginPageTransformer(20));
+        transformer.addTransformer((page, position) -> {
+            float r = 1 - Math.abs(position);
+            page.setScaleY(SCALE_SIDE + r * (SCALE_CENTER - SCALE_SIDE));
+            page.setAlpha(ALPHA_SIDE + r * (1 - ALPHA_SIDE));
+        });
+        vpDiscover.setPageTransformer(transformer);
+
+        // --- THE FIX ---
+        View child = vpDiscover.getChildAt(0);
+        if (child instanceof RecyclerView) {
+            child.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+
+            child.setOnTouchListener((v, event) -> {
+                int action = event.getAction();
+
+                if (action == MotionEvent.ACTION_DOWN) {
+                    sliderHandler.removeCallbacks(sliderRunnable);
+                    // Force the ScrollView (and all parents) to stop intercepting
+                    notifyParentsToDisallowIntercept(v, true);
+
+                } else if (action == MotionEvent.ACTION_MOVE) {
+                    // Keep forcing it during the move
+                    notifyParentsToDisallowIntercept(v, true);
+
+                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                    sliderHandler.removeCallbacks(sliderRunnable);
+                    sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DURATION);
+                    // Release the lock
+                    notifyParentsToDisallowIntercept(v, false);
+                }
+
+                return false; // Allow ViewPager to handle the actual scroll
+            });
+        }
+    }
+
+    // Helper method to walk up the tree and tell EVERYONE to hands off
+    private void notifyParentsToDisallowIntercept(View view, boolean disallow) {
+        ViewParent parent = view.getParent();
+        while (parent != null) {
+            parent.requestDisallowInterceptTouchEvent(disallow);
+            parent = parent.getParent();
+        }
+    }
+
+    private void setupInfiniteDots(int realCount) {
+        tabLayout.removeAllTabs();
+        for (int i = 0; i < realCount; i++) {
+            tabLayout.addTab(tabLayout.newTab());
+        }
+
+        vpDiscover.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
-            public void transformPage(@NonNull View page, float position) {
-                // position 0 = Current Item
-                // position 1 = Next Item (Right)
-                // position -1 = Previous Item (Left)
-
-                if (position >= 0) {
-                    // PAGES BEHIND THE CURRENT ONE (The Stack)
-
-                    // 1. Scale them down as they get further back
-                    float scaleFactor = 0.85f + (1 - 0.85f) * (1 - Math.abs(position));
-                    page.setScaleY(scaleFactor);
-                    page.setScaleX(scaleFactor);
-
-                    // 2. Move them to the left so they overlap the current card
-                    // -page.getWidth() * position cancels out the default side-by-side layout
-                    // + (40 * position) adds a small "peek" so you see the cards behind
-                    page.setTranslationX(-page.getWidth() * position + (40 * position));
-
-                    // 3. Adjust elevation so the current card is on top
-                    page.setTranslationZ(-position);
-
-                    // 4. Fade them out slightly
-                    page.setAlpha(1 - (0.2f * position));
-
-                } else {
-                    // PAGE LEAVING TO THE LEFT (The one being swiped away)
-                    // Keep it normal size but move it naturally
-                    page.setScaleY(1f);
-                    page.setScaleX(1f);
-                    page.setTranslationX(0f);
-                    page.setTranslationZ(0f);
-                    page.setAlpha(1f);
+            public void onPageSelected(int position) {
+                int realPosition = position % realCount;
+                TabLayout.Tab tab = tabLayout.getTabAt(realPosition);
+                if (tab != null && !tab.isSelected()) {
+                    tab.select();
                 }
             }
         });
 
-        // 5. Auto Scroll
-        vpDiscover.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                sliderHandler.removeCallbacks(sliderRunnable);
-                sliderHandler.postDelayed(sliderRunnable, 3000);
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (vpDiscover.getScrollState() == ViewPager2.SCROLL_STATE_IDLE) {
+                    int currentVPPos = vpDiscover.getCurrentItem();
+                    int currentRealPos = currentVPPos % realCount;
+                    int targetRealPos = tab.getPosition();
+                    int diff = targetRealPos - currentRealPos;
+                    if (diff != 0) {
+                        vpDiscover.setCurrentItem(currentVPPos + diff, true);
+                    }
+                }
             }
+            @Override public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
-
-        return view;
     }
 
     private Runnable sliderRunnable = new Runnable() {
         @Override
         public void run() {
             if (vpDiscover != null) {
-                // Just go to next item. Since it's Infinite, we don't need to check limits.
-                vpDiscover.setCurrentItem(vpDiscover.getCurrentItem() + 1);
+                vpDiscover.setCurrentItem(vpDiscover.getCurrentItem() + 1, true);
+                sliderHandler.postDelayed(this, AUTO_SLIDE_DURATION);
             }
         }
     };
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        sliderHandler.removeCallbacks(sliderRunnable);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        sliderHandler.postDelayed(sliderRunnable, 3000);
-    }
+    @Override public void onPause() { super.onPause(); sliderHandler.removeCallbacks(sliderRunnable); }
+    @Override public void onResume() { super.onResume(); sliderHandler.postDelayed(sliderRunnable, AUTO_SLIDE_DURATION); }
 }

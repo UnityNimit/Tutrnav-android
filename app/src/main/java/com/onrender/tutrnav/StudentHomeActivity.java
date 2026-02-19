@@ -3,6 +3,7 @@ package com.onrender.tutrnav;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,10 +28,11 @@ public class StudentHomeActivity extends AppCompatActivity {
 
     // Firebase
     private FirebaseAuth mAuth;
+    private String currentUserName = "Student"; // Default fallback name
 
     // UI Components
-    private TextView tvName;
-    private ImageView imgProfileSmall; // The image inside the card
+    private TextView tvHi, tvName, tvSubtitle; // Added tvHi & tvSubtitle
+    private ImageView imgProfileSmall;
     private CardView profileCard;
     private ImageView navHome, navSchedule, navMap, navNotif;
     private ViewPager2 viewPager;
@@ -59,13 +61,13 @@ public class StudentHomeActivity extends AppCompatActivity {
         // 4. Setup Click Listeners (Navigation & Profile)
         setupClickListeners();
 
-        // 5. Set Initial State (Highlight Home)
-        updateNavUI(0);
+        // 5. Set Initial State
+        // We load user data first, which will then trigger the UI update
+        loadUserData();
     }
 
     /**
      * Called every time the activity comes to the foreground.
-     * Essential for updating the Profile Image/Name after returning from ProfileActivity.
      */
     @Override
     protected void onResume() {
@@ -76,17 +78,20 @@ public class StudentHomeActivity extends AppCompatActivity {
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            // Only apply top/left/right padding, leave bottom for the floating nav
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
     }
 
     private void initViews() {
+        // Text Views
+        tvHi = findViewById(R.id.tvHi);
         tvName = findViewById(R.id.tvName);
-        profileCard = findViewById(R.id.profileCard);
-        imgProfileSmall = findViewById(R.id.imgProfileSmall); // ID from your XML
+        tvSubtitle = findViewById(R.id.tvSubtitle);
 
+        // Profile & Nav
+        profileCard = findViewById(R.id.profileCard);
+        imgProfileSmall = findViewById(R.id.imgProfileSmall);
         navHome = findViewById(R.id.navHome);
         navSchedule = findViewById(R.id.navSchedule);
         navMap = findViewById(R.id.navMap);
@@ -97,9 +102,9 @@ public class StudentHomeActivity extends AppCompatActivity {
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3); // Keep all tabs in memory for smooth performance
+        viewPager.setOffscreenPageLimit(3); // Keep tabs in memory
 
-        // Sync Swipe with Icons
+        // Sync Swipe with Icons & Header Text
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -120,7 +125,6 @@ public class StudentHomeActivity extends AppCompatActivity {
         profileCard.setOnClickListener(v -> {
             Intent intent = new Intent(StudentHomeActivity.this, ProfileActivity.class);
             startActivity(intent);
-            // No finish() here, because we want to come back
         });
     }
 
@@ -129,47 +133,86 @@ public class StudentHomeActivity extends AppCompatActivity {
     private void loadUserData() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            // 1. Set Name (First name only for style)
+            // 1. Get Name
             String fullName = user.getDisplayName();
             if (fullName != null && !fullName.isEmpty()) {
                 // Split "John Doe" -> "John!"
-                tvName.setText(fullName.split(" ")[0] + "!");
+                currentUserName = fullName.split(" ")[0] + "!";
             } else {
-                tvName.setText("Student!");
+                currentUserName = "Student!";
             }
 
-            // 2. Load Image with Glide
+            // 2. Load Image
             if (user.getPhotoUrl() != null) {
                 Glide.with(this)
                         .load(user.getPhotoUrl())
-                        .placeholder(R.mipmap.ic_launcher) // Default while loading
-                        .error(R.mipmap.ic_launcher)       // Default if error
+                        .placeholder(R.mipmap.ic_launcher)
+                        .error(R.mipmap.ic_launcher)
                         .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache efficiently
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(imgProfileSmall);
             }
         } else {
-            // Fallback for Guest/Error
-            tvName.setText("Guest!");
+            currentUserName = "Guest!";
             imgProfileSmall.setImageResource(R.mipmap.ic_launcher);
         }
+
+        // Force update the text based on current tab immediately after loading name
+        updateHeader(viewPager.getCurrentItem());
     }
 
-    // --- UI ANIMATIONS ---
+    // --- UI ANIMATIONS & TEXT LOGIC ---
 
     private void updateNavUI(int position) {
-        // 1. Reset all icons to default state
+        // 1. Reset all icons
         animateIcon(navHome, false);
         animateIcon(navSchedule, false);
         animateIcon(navMap, false);
         animateIcon(navNotif, false);
 
-        // 2. Highlight the selected one
+        // 2. Highlight selected & Update Text
         switch (position) {
             case 0: animateIcon(navHome, true); break;
             case 1: animateIcon(navSchedule, true); break;
             case 2: animateIcon(navMap, true); break;
             case 3: animateIcon(navNotif, true); break;
+        }
+
+        // 3. Update the funny texts
+        updateHeader(position);
+    }
+
+    /**
+     * This is where the magic happens!
+     * Customizes the text based on which fragment is showing.
+     */
+    private void updateHeader(int position) {
+        tvHi.setVisibility(View.VISIBLE); // Ensure it's visible by default
+
+        switch (position) {
+            case 0: // HOME
+                tvHi.setText("Hi ");
+                tvName.setText(currentUserName); // Shows "Hi John!"
+                tvSubtitle.setText("Ready to get that big brain energy? 🧠");
+                break;
+
+            case 1: // SCHEDULE
+                tvHi.setText("The ");
+                tvName.setText("Plan");
+                tvSubtitle.setText("Classes, chaos, and caffeine. ☕");
+                break;
+
+            case 2: // MAP
+                tvHi.setText("Zone ");
+                tvName.setText("Scout");
+                tvSubtitle.setText("Dora ain't got nothing on you. 🗺️");
+                break;
+
+            case 3: // NOTIFICATIONS
+                tvHi.setText("News ");
+                tvName.setText("Flash");
+                tvSubtitle.setText("Tea spilled? Check the updates. 🐸☕");
+                break;
         }
     }
 
@@ -194,8 +237,6 @@ public class StudentHomeActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            // Ensure you have created these Fragment Java classes!
-            // Right Click Package -> New -> Fragment -> Blank Fragment
             switch (position) {
                 case 0: return new HomeFragment();
                 case 1: return new ScheduleFragment();

@@ -1,6 +1,7 @@
 package com.onrender.tutrnav;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -47,8 +48,8 @@ public class AuthActivity extends AppCompatActivity {
 
         // Initialize Views
         btnGoogle = findViewById(R.id.btnGoogle);
-        btnLoginTab = findViewById(R.id.btnLoginTab); // Acts as "Login" button
-        btnSignUpTab = findViewById(R.id.btnSignUpTab); // Acts as "Sign Up" button
+        btnLoginTab = findViewById(R.id.btnLoginTab);
+        btnSignUpTab = findViewById(R.id.btnSignUpTab);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -60,20 +61,15 @@ public class AuthActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // --- NAVIGATION LOGIC ---
-
-        // 1. Login Button -> Go to SignInActivity
         btnLoginTab.setOnClickListener(v -> {
-            Intent intent = new Intent(AuthActivity.this, SignInActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(AuthActivity.this, SignInActivity.class));
         });
 
-        // 2. Sign Up Button -> Go to SignUpActivity
         btnSignUpTab.setOnClickListener(v -> {
-            Intent intent = new Intent(AuthActivity.this, SignUpActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(AuthActivity.this, SignUpActivity.class));
         });
 
-        // 3. Google Direct Login
+        // Google Direct Login
         btnGoogle.setOnClickListener(v -> {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             signInLauncher.launch(signInIntent);
@@ -113,8 +109,20 @@ public class AuthActivity extends AppCompatActivity {
                 });
     }
 
+    // --- FIXED NAVIGATION LOGIC ---
     private void navigateToHome() {
-        Intent intent = new Intent(AuthActivity.this, StudentHomeActivity.class);
+        // 1. Get the user type saved during Onboarding
+        SharedPreferences prefs = getSharedPreferences("TutrnavPrefs", MODE_PRIVATE);
+        String userType = prefs.getString("userType", "student"); // Default to student if missing
+
+        Intent intent;
+        if ("teacher".equals(userType)) {
+            intent = new Intent(AuthActivity.this, TeacherHomeActivity.class);
+        } else {
+            intent = new Intent(AuthActivity.this, StudentHomeActivity.class);
+        }
+
+        // 2. Clear stack so user can't back-press into login
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

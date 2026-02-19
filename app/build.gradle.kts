@@ -26,6 +26,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -63,4 +64,11 @@ dependencies {
 
     // 3. Firebase Auth (Standard)
     implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    implementation("com.google.firebase:firebase-firestore:24.10.0")
+
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+
+    
 }

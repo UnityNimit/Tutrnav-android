@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Selected: Solid White -->
+    <item android:drawable="@drawable/tab_dot"
+        android:state_selected="true" />
+
+    <!-- Unselected: 40% Opacity White -->
+    <item android:drawable="@drawable/tab_dot"
+        android:alpha="0.4"/>
+</selector>

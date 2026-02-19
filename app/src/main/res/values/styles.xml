@@ -5,4 +5,25 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+
+    <!-- Cyber Chip Styles -->
+    <style name="CyberChip">
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="CyberChip.Active" parent="CyberChip">
+        <item name="android:textColor">#2D2B45</item>
+        <item name="android:background">@drawable/bg_chip_active</item>
+    </style>
+
+    <style name="CyberChip.Inactive" parent="CyberChip">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">@drawable/bg_chip_inactive</item>
+    </style>
 </resources>
