@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6555C0">
+    android:background="@android:color/transparent">
 
     <!-- STATE 1: LIST OF TUITIONS -->
     <LinearLayout
@@ -53,7 +53,7 @@
         android:id="@+id/layoutForm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#6555C0"
+        android:background="@android:color/transparent"
         android:fillViewport="true"
         android:visibility="gone">
 
@@ -141,6 +141,26 @@
                 android:background="@drawable/bg_input_field"
                 android:paddingHorizontal="15dp"
                 android:textColor="#FFF" />
+
+            <!-- TIMINGS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Timings"
+                android:textColor="#B0B0B0" />
+
+            <EditText
+                android:id="@+id/etTime"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_input_field"
+                android:hint="e.g. 04:00 PM - 06:00 PM"
+                android:inputType="text"
+                android:paddingHorizontal="15dp"
+                android:textColor="#FFF"
+                android:textColorHint="#999" />
 
             <!-- ROW: FEE & MAX STUDENTS -->
             <LinearLayout
@@ -301,58 +321,68 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:background="#15000000"
-                android:padding="10dp"
                 android:gravity="top"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <!-- Using CheckBox to simulate the radio toggle -->
                 <CheckBox
                     android:id="@+id/cbConsent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
                     android:buttonTint="#FFCA28"
                     android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:minHeight="0dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:lineSpacingExtra="3dp"
                     android:text="All the details mentioned in the Tuition Details tab will be displayed publically. By ticking this, you acknowledge and permit the display of details."
                     android:textColor="#D0D0D0"
-                    android:textSize="12sp"
-                    android:lineSpacingExtra="3dp"/>
+                    android:textSize="12sp" />
             </LinearLayout>
 
-            <!-- SAVE BUTTON -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSave"
+            <!-- ACTION BUTTONS (DELETE & SAVE SIDE-BY-SIDE) -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:backgroundTint="#FFCA28"
-                android:text="Save Class"
-                android:textColor="#2F2B4B"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:cornerRadius="15dp" />
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-            <!-- DELETE BUTTON -->
-            <!-- Initially set to GONE in XML, make Visible in Java/Kotlin if editing -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDelete"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="15dp"
-                android:backgroundTint="#2E2345"
-                android:text="Delete Class"
-                android:textColor="#FF6B6B"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:visibility="visible"
-                app:cornerRadius="15dp"
-                app:strokeColor="#FF6B6B"
-                app:strokeWidth="1dp" />
+                <!-- DELETE BUTTON (Left) -->
+                <!-- Set visibility via code depending on Create vs Edit state -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#2E2345"
+                    android:text="Delete"
+                    android:textColor="#FF6B6B"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:cornerRadius="15dp"
+                    app:strokeColor="#FF6B6B"
+                    app:strokeWidth="1dp" />
+
+                <!-- SAVE BUTTON (Right) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSave"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFCA28"
+                    android:text="Save Class"
+                    android:textColor="#2F2B4B"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="15dp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

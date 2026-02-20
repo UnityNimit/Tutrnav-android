@@ -10,9 +10,10 @@ public class TuitionModel {
 
     // --- Core Class Details ---
     private String title;
-    private String subject; // Kept for legacy support, main categorization is now via Tags
+    private String subject;      // Kept for legacy support, main categorization is now via Tags
+    private String time;         // NEW: Field for class timings (e.g., "04:00 PM - 06:00 PM")
     private String fee;
-    private int maxStudents; // NEW: Field for maximum capacity
+    private int maxStudents;     // NEW: Field for maximum capacity
     private String description;
     private String bannerUrl;
 
@@ -20,7 +21,7 @@ public class TuitionModel {
     private double latitude;
     private double longitude;
 
-    // --- Teacher Info (Denormalized) ---
+    // --- Teacher Info (Denormalized for faster reads) ---
     private String teacherName;
     private String teacherPhoto;
 
@@ -31,18 +32,24 @@ public class TuitionModel {
     //       CONSTRUCTORS
     // ==========================================
 
-    // 1. Required Empty Constructor for Firebase/Firestore
+    /**
+     * Required Empty Constructor for Firebase/Firestore Deserialization.
+     * Do NOT remove this, or Firestore will crash when fetching data!
+     */
     public TuitionModel() {}
 
-    // 2. Full Parameter Constructor
+    /**
+     * Full Parameter Constructor for manual instantiations.
+     */
     public TuitionModel(String tuitionId, String teacherId, String title, String subject,
-                        String fee, int maxStudents, String description, String bannerUrl,
-                        double latitude, double longitude, String teacherName,
-                        String teacherPhoto, List<String> tags) {
+                        String time, String fee, int maxStudents, String description,
+                        String bannerUrl, double latitude, double longitude,
+                        String teacherName, String teacherPhoto, List<String> tags) {
         this.tuitionId = tuitionId;
         this.teacherId = teacherId;
         this.title = title;
         this.subject = subject;
+        this.time = time; // Initialized newly added timings
         this.fee = fee;
         this.maxStudents = maxStudents;
         this.description = description;
@@ -58,8 +65,8 @@ public class TuitionModel {
     //       GETTERS AND SETTERS
     // ==========================================
 
-    // Note: Setters are required for Firebase to populate fields correctly
-    // if the constructor isn't used directly during deserialization.
+    // Note: Setters are required for Firebase to dynamically map fields
+    // to variables if the empty constructor is used.
 
     public String getTuitionId() { return tuitionId; }
     public void setTuitionId(String tuitionId) { this.tuitionId = tuitionId; }
@@ -72,6 +79,10 @@ public class TuitionModel {
 
     public String getSubject() { return subject; }
     public void setSubject(String subject) { this.subject = subject; }
+
+    // --- NEW: Timing Getter/Setter ---
+    public String getTime() { return time; }
+    public void setTime(String time) { this.time = time; }
 
     public String getFee() { return fee; }
     public void setFee(String fee) { this.fee = fee; }
@@ -99,4 +110,23 @@ public class TuitionModel {
 
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
+
+    // ==========================================
+    //       DEBUGGING / UTILITY
+    // ==========================================
+
+    /**
+     * Clean toString() representation for easy Logcat debugging.
+     */
+    @Override
+    public String toString() {
+        return "TuitionModel{" +
+                "tuitionId='" + tuitionId + '\'' +
+                ", title='" + title + '\'' +
+                ", time='" + time + '\'' +
+                ", fee='" + fee + '\'' +
+                ", maxStudents=" + maxStudents +
+                ", teacherName='" + teacherName + '\'' +
+                '}';
+    }
 }

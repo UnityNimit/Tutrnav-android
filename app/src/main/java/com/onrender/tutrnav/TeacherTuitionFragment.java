@@ -3,6 +3,8 @@ package com.onrender.tutrnav;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -42,7 +44,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +66,7 @@ public class TeacherTuitionFragment extends Fragment {
     // --- Form Views ---
     private ImageView imgBanner, btnPickLocation;
     private LinearLayout btnUploadImage;
-    private EditText etTitle, etTagInput, etFee, etMaxStudents, etDesc, etLat, etLng;
+    private EditText etTitle, etTime, etTagInput, etFee, etMaxStudents, etDesc, etLat, etLng;
     private ChipGroup chipGroupTags;
     private CheckBox cbConsent;
     private MaterialButton btnSave, btnDelete;
@@ -130,8 +132,9 @@ public class TeacherTuitionFragment extends Fragment {
         btnUploadImage = v.findViewById(R.id.btnUploadImage);
 
         etTitle = v.findViewById(R.id.etTitle);
+        etTime = v.findViewById(R.id.etTime); // NEW: Timings Input
         etFee = v.findViewById(R.id.etFee);
-        etMaxStudents = v.findViewById(R.id.etMaxStudents); // NEW
+        etMaxStudents = v.findViewById(R.id.etMaxStudents);
         etTagInput = v.findViewById(R.id.etTagInput);
         chipGroupTags = v.findViewById(R.id.chipGroupTags);
         etLat = v.findViewById(R.id.etLat);
@@ -139,9 +142,9 @@ public class TeacherTuitionFragment extends Fragment {
         btnPickLocation = v.findViewById(R.id.btnPickLocation);
         etDesc = v.findViewById(R.id.etDesc);
 
-        cbConsent = v.findViewById(R.id.cbConsent); // NEW
+        cbConsent = v.findViewById(R.id.cbConsent);
         btnSave = v.findViewById(R.id.btnSave);
-        btnDelete = v.findViewById(R.id.btnDelete); // NEW
+        btnDelete = v.findViewById(R.id.btnDelete);
 
         // --- Click Listeners ---
         fabAddNew.setOnClickListener(view -> showForm(null));
@@ -157,7 +160,6 @@ public class TeacherTuitionFragment extends Fragment {
         });
 
         btnSave.setOnClickListener(view -> validateAndSave());
-
         btnDelete.setOnClickListener(view -> confirmDelete());
     }
 
@@ -174,11 +176,11 @@ public class TeacherTuitionFragment extends Fragment {
     private void loadMyTuitions() {
         if (mAuth.getCurrentUser() == null) return;
 
-        // Order by date or title if needed
         db.collection("tuitions")
                 .whereEqualTo("teacherId", mAuth.getCurrentUser().getUid())
                 .get()
                 .addOnSuccessListener(snapshots -> {
+                    if (!isAdded()) return;
                     myTuitionsList.clear();
                     for(DocumentSnapshot doc : snapshots) {
                         TuitionModel t = doc.toObject(TuitionModel.class);
@@ -186,7 +188,9 @@ public class TeacherTuitionFragment extends Fragment {
                     }
                     adapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to load classes", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    if (isAdded()) Toast.makeText(getContext(), "Failed to load classes", Toast.LENGTH_SHORT).show();
+                });
     }
 
     // ==========================================
@@ -196,19 +200,19 @@ public class TeacherTuitionFragment extends Fragment {
     private void showList() {
         layoutForm.setVisibility(View.GONE);
         layoutList.setVisibility(View.VISIBLE);
-        // Refresh list to show updates
         loadMyTuitions();
     }
 
     private void showForm(@Nullable TuitionModel model) {
         layoutList.setVisibility(View.GONE);
         layoutForm.setVisibility(View.VISIBLE);
+        layoutForm.scrollTo(0, 0); // Smooth UX: scroll to top
 
         // Reset Common Fields
         chipGroupTags.removeAllViews();
         currentTags.clear();
         selectedImageUri = null;
-        cbConsent.setChecked(false); // Always reset consent
+        cbConsent.setChecked(false);
 
         if (model == null) {
             // --- CREATE MODE ---
@@ -217,9 +221,12 @@ public class TeacherTuitionFragment extends Fragment {
 
             tvFormTitle.setText("Create New Class");
             btnSave.setText("Publish Class");
-            btnDelete.setVisibility(View.GONE); // Hide delete button
+
+            // Hiding this allows the Save button to elegantly stretch 100% width
+            btnDelete.setVisibility(View.GONE);
 
             etTitle.setText("");
+            etTime.setText("");
             etFee.setText("");
             etMaxStudents.setText("");
             etDesc.setText("");
@@ -234,9 +241,12 @@ public class TeacherTuitionFragment extends Fragment {
 
             tvFormTitle.setText("Edit Class Details");
             btnSave.setText("Update Class");
-            btnDelete.setVisibility(View.VISIBLE); // Show delete button
+
+            // Shows delete button side-by-side with save beautifully
+            btnDelete.setVisibility(View.VISIBLE);
 
             etTitle.setText(model.getTitle());
+            etTime.setText(model.getTime() != null ? model.getTime() : ""); // Ensures no null crashes
             etFee.setText(model.getFee());
             etMaxStudents.setText(String.valueOf(model.getMaxStudents()));
             etDesc.setText(model.getDescription());
@@ -262,10 +272,12 @@ public class TeacherTuitionFragment extends Fragment {
 
     private void validateAndSave() {
         // 1. Basic Validation
-        if (etTitle.getText().toString().isEmpty() ||
-                etFee.getText().toString().isEmpty() ||
-                etMaxStudents.getText().toString().isEmpty()) {
-            Toast.makeText(getContext(), "Title, Fee, and Max Students are required.", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(etTitle.getText().toString().trim()) ||
+                TextUtils.isEmpty(etTime.getText().toString().trim()) ||
+                TextUtils.isEmpty(etFee.getText().toString().trim()) ||
+                TextUtils.isEmpty(etMaxStudents.getText().toString().trim())) {
+
+            Toast.makeText(getContext(), "Title, Timings, Fee, and Max Students are required.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -275,7 +287,12 @@ public class TeacherTuitionFragment extends Fragment {
             return;
         }
 
+        progressDialog.setMessage("Saving Details...");
         progressDialog.show();
+
+        // Disable buttons temporarily
+        btnSave.setEnabled(false);
+        btnDelete.setEnabled(false);
 
         // 3. Image Upload Logic
         if (selectedImageUri != null) {
@@ -286,6 +303,8 @@ public class TeacherTuitionFragment extends Fragment {
     }
 
     private void confirmDelete() {
+        if (editingTuitionId == null) return;
+
         new AlertDialog.Builder(getContext())
                 .setTitle("Delete Class?")
                 .setMessage("Are you sure you want to delete this class? This action cannot be undone.")
@@ -295,41 +314,45 @@ public class TeacherTuitionFragment extends Fragment {
     }
 
     private void deleteClassFromFirestore() {
-        if (editingTuitionId == null) return;
         progressDialog.setMessage("Deleting...");
         progressDialog.show();
 
         db.collection("tuitions").document(editingTuitionId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Class deleted successfully", Toast.LENGTH_SHORT).show();
-                    showList();
+                    if (isAdded()) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getContext(), "Class deleted successfully", Toast.LENGTH_SHORT).show();
+                        showList();
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Error deleting class", Toast.LENGTH_SHORT).show();
+                    if (isAdded()) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getContext(), "Error deleting class", Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
 
     private void uploadImage() {
-        // Using Cloudinary
         MediaManager.get().upload(selectedImageUri)
-                .unsigned("tutornav_preset") // Ensure this preset exists in your Cloudinary
+                .unsigned("tutornav_preset") // Ensure this preset matches Cloudinary setup
                 .callback(new UploadCallback() {
                     @Override public void onStart(String requestId) {}
                     @Override public void onProgress(String requestId, long bytes, long totalBytes) {}
                     @Override public void onSuccess(String requestId, Map resultData) {
                         String url = (String) resultData.get("secure_url");
-                        if(getActivity() != null) {
+                        if(isAdded() && getActivity() != null) {
                             getActivity().runOnUiThread(() -> saveToFirestore(url));
                         }
                     }
                     @Override public void onError(String requestId, ErrorInfo error) {
-                        if(getActivity() != null) {
+                        if(isAdded() && getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 progressDialog.dismiss();
-                                Toast.makeText(getContext(), "Image Upload Failed: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+                                btnSave.setEnabled(true);
+                                btnDelete.setEnabled(true);
+                                Toast.makeText(getContext(), "Upload Failed: " + error.getDescription(), Toast.LENGTH_SHORT).show();
                             });
                         }
                     }
@@ -341,28 +364,26 @@ public class TeacherTuitionFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
             progressDialog.dismiss();
+            btnSave.setEnabled(true);
+            btnDelete.setEnabled(true);
             return;
         }
 
         String tuitionId = (editingTuitionId == null) ? UUID.randomUUID().toString() : editingTuitionId;
 
-        // Parse Numbers Safely
         double lat = 0.0, lng = 0.0;
         int maxStuds = 0;
         try {
             if(!etLat.getText().toString().isEmpty()) lat = Double.parseDouble(etLat.getText().toString());
             if(!etLng.getText().toString().isEmpty()) lng = Double.parseDouble(etLng.getText().toString());
             maxStuds = Integer.parseInt(etMaxStudents.getText().toString());
-        } catch (NumberFormatException e) {
-            // handle error
-        }
+        } catch (NumberFormatException ignored) {}
 
-        // Create Map to avoid Constructor issues or use updated Model
-        // NOTE: Your TuitionModel MUST have a 'maxStudents' field now.
         Map<String, Object> data = new HashMap<>();
         data.put("tuitionId", tuitionId);
         data.put("teacherId", user.getUid());
         data.put("title", etTitle.getText().toString().trim());
+        data.put("time", etTime.getText().toString().trim()); // Saving Timings
         data.put("fee", etFee.getText().toString().trim());
         data.put("maxStudents", maxStuds);
         data.put("description", etDesc.getText().toString().trim());
@@ -373,17 +394,24 @@ public class TeacherTuitionFragment extends Fragment {
         data.put("teacherPhoto", (user.getPhotoUrl() != null) ? user.getPhotoUrl().toString() : "");
         data.put("tags", currentTags);
 
-        // Using set() with Merge option or just set() since we build full object
         db.collection("tuitions").document(tuitionId)
-                .set(data)
+                .set(data, SetOptions.merge())
                 .addOnSuccessListener(v -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Class saved successfully!", Toast.LENGTH_SHORT).show();
-                    showList();
+                    if (isAdded()) {
+                        progressDialog.dismiss();
+                        btnSave.setEnabled(true);
+                        btnDelete.setEnabled(true);
+                        Toast.makeText(getContext(), "Class saved successfully!", Toast.LENGTH_SHORT).show();
+                        showList();
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Database Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (isAdded()) {
+                        progressDialog.dismiss();
+                        btnSave.setEnabled(true);
+                        btnDelete.setEnabled(true);
+                        Toast.makeText(getContext(), "Database Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
 
@@ -413,8 +441,12 @@ public class TeacherTuitionFragment extends Fragment {
         Chip chip = new Chip(getContext());
         chip.setText(tag);
         chip.setCloseIconVisible(true);
-        chip.setTextColor(getResources().getColor(android.R.color.white));
-        chip.setChipBackgroundColorResource(R.color.colorPrimary); // Make sure you have this or use a hex color
+
+        // Dynamic Purple styling perfectly matching the Theme, no new XML needed
+        chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#6555C0")));
+        chip.setTextColor(Color.WHITE);
+        chip.setCloseIconTint(ColorStateList.valueOf(Color.WHITE));
+
         chip.setOnCloseIconClickListener(v -> {
             chipGroupTags.removeView(chip);
             currentTags.remove(tag);
@@ -445,7 +477,7 @@ public class TeacherTuitionFragment extends Fragment {
     }
 
     // ==========================================
-    //          RECYCLER ADAPTER (UPDATED)
+    //          RECYCLER ADAPTER
     // ==========================================
 
     private static class MyTuitionAdapter extends RecyclerView.Adapter<MyTuitionAdapter.VH> {
@@ -460,7 +492,6 @@ public class TeacherTuitionFragment extends Fragment {
 
         @NonNull @Override
         public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // Updated to use the new Horizontal Card Layout
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tuition_card, parent, false);
             return new VH(v);
         }
@@ -471,11 +502,8 @@ public class TeacherTuitionFragment extends Fragment {
 
             holder.title.setText(t.getTitle());
             holder.fee.setText("₹" + t.getFee() + "/mo");
-
-            // Format Max Students
             holder.students.setText("Max: " + t.getMaxStudents());
 
-            // Format Tags (Join first 2 tags with bullet)
             if(t.getTags() != null && !t.getTags().isEmpty()){
                 String tagStr = TextUtils.join(" • ", t.getTags());
                 holder.tags.setText(tagStr);
@@ -500,7 +528,6 @@ public class TeacherTuitionFragment extends Fragment {
 
             public VH(@NonNull View v) {
                 super(v);
-                // Bind to IDs from item_tuition_card.xml
                 title = v.findViewById(R.id.tvCardTitle);
                 tags = v.findViewById(R.id.tvCardTags);
                 fee = v.findViewById(R.id.tvCardFee);

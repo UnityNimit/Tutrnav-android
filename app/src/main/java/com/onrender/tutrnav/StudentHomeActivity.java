@@ -193,25 +193,25 @@ public class StudentHomeActivity extends AppCompatActivity {
             case 0: // HOME
                 tvHi.setText("Hi ");
                 tvName.setText(currentUserName); // Shows "Hi John!"
-                tvSubtitle.setText("Ready to get that big brain energy? 🧠");
+                tvSubtitle.setText("Ready to get that big brain energy?");
                 break;
 
             case 1: // SCHEDULE
                 tvHi.setText("The ");
                 tvName.setText("Plan");
-                tvSubtitle.setText("Classes, chaos, and caffeine. ☕");
+                tvSubtitle.setText("Classes, chaos, and caffeine.");
                 break;
 
             case 2: // MAP
                 tvHi.setText("Zone ");
                 tvName.setText("Scout");
-                tvSubtitle.setText("Dora ain't got nothing on you. 🗺️");
+                tvSubtitle.setText("Dora ain't got nothing on you.");
                 break;
 
             case 3: // NOTIFICATIONS
                 tvHi.setText("News ");
                 tvName.setText("Flash");
-                tvSubtitle.setText("Tea spilled? Check the updates. 🐸☕");
+                tvSubtitle.setText("Tea spilled? Check the updates.");
                 break;
         }
     }

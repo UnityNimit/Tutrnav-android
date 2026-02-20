@@ -1,7 +1,7 @@
 package com.onrender.tutrnav;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,35 +18,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class TeacherDashboardFragment extends Fragment {
 
-    // UI Components
-    private TextView tvTotalEarnings, tvActiveStudents, tvPendingCount, tvRating;
-    private RecyclerView rvRequests;
-    private ChipGroup chipGroupFilters;
+    // --- UI Components ---
+    private TextView tvHeroTitle, tvHeroTime;
+    private MaterialButton btnStartClass;
+    private TextView tvTotalEarnings, tvActiveStudents, tvRating, btnViewAllRequests;
     private LinearLayout emptyStateView;
+    private RecyclerView rvRequests;
 
-    // Data
+    // --- Data & Adapters ---
     private RequestAdapter adapter;
-    private List<EnrollmentModel> allEnrollments = new ArrayList<>(); // Master Data
-    private List<EnrollmentModel> pendingRequests = new ArrayList<>(); // Filtered for Adapter
+    private List<EnrollmentModel> allEnrollments = new ArrayList<>();
+    private List<EnrollmentModel> pendingRequests = new ArrayList<>();
     private List<TuitionModel> myTuitions = new ArrayList<>();
 
-    // Firebase
+    // Quick lookup for calculating total earnings efficiently
+    private Map<String, Double> tuitionFeesMap = new HashMap<>();
+
+    // --- Firebase ---
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-
-    // State
-    private String selectedTuitionId = "ALL"; // "ALL" or specific ID
 
     @Nullable
     @Override
@@ -66,38 +69,73 @@ public class TeacherDashboardFragment extends Fragment {
     }
 
     private void initViews(View v) {
+        // Hero Section
+        tvHeroTitle = v.findViewById(R.id.tvHeroTitle);
+        tvHeroTime = v.findViewById(R.id.tvHeroTime);
+        btnStartClass = v.findViewById(R.id.btnStartClass);
+
+        // Stats Section
         tvTotalEarnings = v.findViewById(R.id.tvTotalEarnings);
         tvActiveStudents = v.findViewById(R.id.tvActiveStudents);
-        tvPendingCount = v.findViewById(R.id.tvPendingCount);
         tvRating = v.findViewById(R.id.tvRating);
-        chipGroupFilters = v.findViewById(R.id.chipGroupFilters);
-        emptyStateView = v.findViewById(R.id.emptyStateView);
 
+        // Requests Section
+        btnViewAllRequests = v.findViewById(R.id.btnViewAllRequests);
+        emptyStateView = v.findViewById(R.id.emptyStateView);
         rvRequests = v.findViewById(R.id.rvRequests);
+
+        // Setup RecyclerView
         rvRequests.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvRequests.setNestedScrollingEnabled(false);
         adapter = new RequestAdapter(pendingRequests);
         rvRequests.setAdapter(adapter);
+
+        // Setup Button Listeners
+        btnStartClass.setOnClickListener(view ->
+                Toast.makeText(getContext(), "Starting Live Room...", Toast.LENGTH_SHORT).show()
+        );
+
+        btnViewAllRequests.setOnClickListener(view ->
+                Toast.makeText(getContext(), "Opening all requests...", Toast.LENGTH_SHORT).show()
+        );
     }
 
     // --- DATA FETCHING (Parallel) ---
     private void fetchAllData() {
         String uid = mAuth.getCurrentUser().getUid();
 
-        // 1. Fetch Tuitions (To create chips & calculate fees)
+        // 1. Fetch Tuitions (To update Hero Card & map pricing)
         db.collection("tuitions").whereEqualTo("teacherId", uid).get()
                 .addOnSuccessListener(snapshots -> {
                     myTuitions.clear();
+                    tuitionFeesMap.clear();
+
                     for (DocumentSnapshot doc : snapshots) {
                         TuitionModel t = doc.toObject(TuitionModel.class);
-                        if (t != null) myTuitions.add(t);
+                        if (t != null) {
+                            myTuitions.add(t);
+
+                            // Safely parse fee to a Double and store mapping by Document ID
+                            double fee = 0.0;
+                            if (t.getFee() != null && !t.getFee().isEmpty()) {
+                                try {
+                                    String cleanFee = t.getFee().replaceAll("", "");
+                                    fee = Double.parseDouble(cleanFee);
+                                } catch (NumberFormatException ignored) {}
+                            }
+                            tuitionFeesMap.put(doc.getId(), fee);
+                        }
                     }
-                    setupFilterChips();
+                    updateHeroCard();
+                    recalculateDashboard(); // Recalculate just in case enrollments loaded first
                 });
 
-        // 2. Fetch Enrollments (To calculate stats & show requests)
+        // 2. Fetch Enrollments (To populate requests and active students)
         db.collection("enrollments").whereEqualTo("teacherId", uid)
                 .addSnapshotListener((value, error) -> {
-                    if (error != null) return;
+                    if (error != null) {
+                        return;
+                    }
                     if (value != null) {
                         allEnrollments.clear();
                         for (DocumentSnapshot doc : value) {
@@ -108,77 +146,58 @@ public class TeacherDashboardFragment extends Fragment {
                 });
     }
 
-    // --- UI LOGIC ---
-    private void setupFilterChips() {
-        chipGroupFilters.removeAllViews();
-
-        // "All Classes" Chip
-        addChip("ALL", "All Classes", true);
-
-        // Specific Class Chips
-        for (TuitionModel t : myTuitions) {
-            addChip(t.getTeacherId(), t.getTitle(), false); // Using teacherID as ID per your structure, ideally use doc ID
-        }
-    }
-
-    private void addChip(String id, String label, boolean isChecked) {
-        Chip chip = new Chip(getContext());
-        chip.setText(label);
-        chip.setCheckable(true);
-        chip.setTag(id);
-        chip.setChecked(isChecked);
-
-        // Chip Styling
-        chip.setChipBackgroundColorResource(R.color.white);
-
-        chip.setOnCheckedChangeListener((buttonView, checked) -> {
-            if (checked) {
-                selectedTuitionId = id;
-                recalculateDashboard();
-            }
-        });
-        chipGroupFilters.addView(chip);
-    }
-
-    private void recalculateDashboard() {
-        // 1. Filter Data based on Chip
-        List<EnrollmentModel> filteredEnrollments = new ArrayList<>();
-        if (selectedTuitionId.equals("ALL")) {
-            filteredEnrollments.addAll(allEnrollments);
+    // --- UI UPDATES ---
+    @SuppressLint("SetTextI18n")
+    private void updateHeroCard() {
+        if (!myTuitions.isEmpty()) {
+            // Just picking the first class for the Hero Card demonstration
+            TuitionModel nextClass = myTuitions.get(0);
+            tvHeroTitle.setText(nextClass.getTitle());
+            tvHeroTime.setText((nextClass.getTime() != null ? nextClass.getTime() : "Timing TBD") + " • Live");
+            btnStartClass.setVisibility(View.VISIBLE);
         } else {
-            for (EnrollmentModel e : allEnrollments) {
-                if (e.getTuitionId().equals(selectedTuitionId)) {
-                    filteredEnrollments.add(e);
-                }
-            }
+            tvHeroTitle.setText("No Active Classes");
+            tvHeroTime.setText("Tap on My Classes to create one.");
+            btnStartClass.setVisibility(View.GONE);
         }
+    }
 
-        // 2. Calculate Stats
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
+    private void recalculateDashboard() {
         int activeCount = 0;
-        int pendingCount = 0;
-        double totalEarnings = 0;
+        double totalEarnings = 0.0;
 
-        pendingRequests.clear(); // Clear adapter list
+        pendingRequests.clear();
 
-        for (EnrollmentModel e : filteredEnrollments) {
+        for (EnrollmentModel e : allEnrollments) {
             if ("approved".equals(e.getStatus())) {
                 activeCount++;
-                // Find tuition fee for this enrollment
-                double fee = getFeeForTuition(e.getTuitionId());
-                totalEarnings += fee;
+
+                // Fetch pricing mapping using the tuition ID attached to the enrollment
+                if (e.getTuitionId() != null && tuitionFeesMap.containsKey(e.getTuitionId())) {
+                    totalEarnings += tuitionFeesMap.get(e.getTuitionId());
+                }
             } else if ("pending".equals(e.getStatus())) {
-                pendingCount++;
-                pendingRequests.add(e); // Add to request list
+                pendingRequests.add(e);
             }
         }
 
-        // 3. Update UI
+        // 3. Update Text UI
         tvActiveStudents.setText(String.valueOf(activeCount));
-        tvPendingCount.setText(String.valueOf(pendingCount));
-        tvTotalEarnings.setText("₹" + (int)totalEarnings); // Format nicely
-        tvRating.setText("4.9"); // Static for now, requires Reviews Collection implementation
+        tvRating.setText("4.9"); // Can be updated with a real aggregation later
 
-        // Update Request List
+        // Format Currency dynamically
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        currencyFormat.setMaximumFractionDigits(0);
+
+        // If it's a very large number, format as k (e.g., 45k)
+        if (totalEarnings >= 1000) {
+            tvTotalEarnings.setText("₹" + (int)(totalEarnings / 1000) + "k");
+        } else {
+            tvTotalEarnings.setText(currencyFormat.format(totalEarnings));
+        }
+
+        // 4. Update Requests List & Empty State
         adapter.notifyDataSetChanged();
         if (pendingRequests.isEmpty()) {
             emptyStateView.setVisibility(View.VISIBLE);
@@ -189,60 +208,61 @@ public class TeacherDashboardFragment extends Fragment {
         }
     }
 
-    private double getFeeForTuition(String tuitionId) {
-        // Find the tuition object to get the fee string
-        for (TuitionModel t : myTuitions) {
-            // Note: In your current data model, you might be using teacherId as tuitionId.
-            // Adjust logic if you add a specific docId to TuitionModel later.
-            if (t.getTeacherId().equals(tuitionId)) {
-                try {
-                    // Remove non-numeric chars (e.g. "₹500")
-                    String cleanFee = t.getFee().replaceAll("[^\\d.]", "");
-                    return Double.parseDouble(cleanFee);
-                } catch (Exception e) {
-                    return 0;
-                }
-            }
-        }
-        return 0;
-    }
-
     private void updateStatus(String enrollmentId, String status) {
+        if (enrollmentId == null || enrollmentId.isEmpty()) return;
+
         db.collection("enrollments").document(enrollmentId)
                 .update("status", status)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), status.toUpperCase(), Toast.LENGTH_SHORT).show();
-                    // Listener will trigger recalculateDashboard automatically
-                });
+                    Toast.makeText(getContext(), "Request " + status.toUpperCase(), Toast.LENGTH_SHORT).show();
+                    // Notice: No need to manually update lists here, the SnapshotListener on Enrollments
+                    // triggers instantly and `recalculateDashboard()` fires automatically.
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show());
     }
 
-    // --- ADAPTER ---
+    // --- RECYCLERVIEW ADAPTER ---
     private class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
         List<EnrollmentModel> list;
-        public RequestAdapter(List<EnrollmentModel> list) { this.list = list; }
 
-        @NonNull @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_teacher_request, parent, false));
+        public RequestAdapter(List<EnrollmentModel> list) {
+            this.list = list;
         }
 
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_teacher_request, parent, false));
+        }
+
+        @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             EnrollmentModel item = list.get(position);
-            holder.tvName.setText(item.getStudentName());
-            holder.tvClass.setText("Wants to join: " + item.getTuitionTitle());
 
+            holder.tvName.setText(item.getStudentName() != null ? item.getStudentName() : "Unknown Student");
+            holder.tvClass.setText("Wants to join: " + (item.getTuitionTitle() != null ? item.getTuitionTitle() : "Class"));
+
+            // Safely load image with a circular crop
             if (item.getStudentPhoto() != null && !item.getStudentPhoto().isEmpty()) {
-                Glide.with(holder.itemView.getContext()).load(item.getStudentPhoto()).circleCrop().into(holder.imgProfile);
+                Glide.with(holder.itemView.getContext())
+                        .load(item.getStudentPhoto())
+                        .circleCrop()
+                        .into(holder.imgProfile);
             } else {
                 holder.imgProfile.setImageResource(R.mipmap.ic_launcher);
             }
 
+            // CTA Buttons
             holder.btnApprove.setOnClickListener(v -> updateStatus(item.getEnrollmentId(), "approved"));
             holder.btnDecline.setOnClickListener(v -> updateStatus(item.getEnrollmentId(), "rejected"));
         }
 
-        @Override public int getItemCount() { return list.size(); }
+        @Override
+        public int getItemCount() {
+            return list.size();
+        }
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvName, tvClass;

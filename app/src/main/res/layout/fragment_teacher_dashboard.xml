@@ -1,269 +1,316 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6555C0"
-    android:fillViewport="true">
+    android:background="@android:color/transparent"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:paddingBottom="120dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="100dp">
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="10dp">
 
-        <!-- HEADER SECTION -->
+        <!-- SECTION: HERO (UP NEXT) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Up Next"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#FFCA28"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Decorative Pattern -->
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:alpha="0.1"
+                    android:rotation="45"
+                    android:src="@android:drawable/ic_menu_agenda"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#000000" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_circle_dark"
+                        android:backgroundTint="#2E2345"
+                        android:gravity="center"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp">
+
+                        <View
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:background="@drawable/bg_circle_dark"
+                            android:backgroundTint="#FF5252" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="LIVE IN 10 MIN"
+                            android:textColor="#FFFFFF"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvHeroTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Advanced Physics"
+                        android:textColor="#2E2345"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvHeroTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="04:00 PM - 05:30 PM • 45 Students"
+                        android:textColor="#403060"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnStartClass"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="#2E2345"
+                        android:text="Start Class Now"
+                        android:textColor="#FFFFFF"
+                        app:cornerRadius="12dp"
+                        app:icon="@android:drawable/ic_media_play"
+                        app:iconTint="#FFFFFF" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- SECTION: ANALYTICS GRID -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"
+            android:text="Overview"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <LinearLayout
-            android:id="@+id/headerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#5C4DAd"
-            android:padding="24dp"
-            app:layout_constraintTop_toTopOf="parent">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dashboard"
-                android:textColor="#FFFFFF"
-                android:textSize="32sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Overview &amp; Analytics"
-                android:textColor="#D1C4E9"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
-
-        <!-- FILTER CHIPS -->
-        <HorizontalScrollView
-            android:id="@+id/scrollChips"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="24dp"
-            android:layout_marginTop="-20dp"
-            android:clipToPadding="false"
-            android:scrollbars="none"
-            app:layout_constraintTop_toBottomOf="@id/headerLayout">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupFilters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:selectionRequired="true" />
-        </HorizontalScrollView>
-
-        <!-- STATS GRID -->
-        <GridLayout
-            android:id="@+id/gridStats"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="2"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@id/scrollChips">
-
-            <!-- 1. EARNINGS CARD -->
+            <!-- Card 1: Revenue -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#2E2345"
-                app:cardElevation="4dp">
+                android:layout_height="100dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#1F1B33"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/sym_def_app_icon"
-                        app:tint="#4CAF50"/>
+                        app:tint="#4CAF50" />
+
                     <TextView
                         android:id="@+id/tvTotalEarnings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₹0"
+                        android:layout_marginTop="8dp"
+                        android:text="₹45k"
                         android:textColor="#FFFFFF"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="5dp"/>
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Est. Earnings"
+                        android:text="Earnings"
                         android:textColor="#B0B0B0"
-                        android:textSize="11sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- 2. STUDENTS CARD -->
+            <!-- Card 2: Rating -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#2E2345"
-                app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_myplaces"
-                        app:tint="#2196F3"/>
-                    <TextView
-                        android:id="@+id/tvActiveStudents"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#FFFFFF"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="5dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Active Students"
-                        android:textColor="#B0B0B0"
-                        android:textSize="11sp"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                android:layout_height="100dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#1F1B33"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
 
-            <!-- 3. RATING CARD -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#2E2345"
-                app:cardElevation="4dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/star_on"
-                        app:tint="#FFCA28"/>
+                        app:tint="#FFCA28" />
+
                     <TextView
                         android:id="@+id/tvRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:text="4.9"
                         android:textColor="#FFFFFF"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="5dp"/>
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Avg Rating"
+                        android:text="Rating"
                         android:textColor="#B0B0B0"
-                        android:textSize="11sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- 4. PENDING CARD -->
+            <!-- Card 3: Students -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#2E2345"
-                app:cardElevation="4dp">
+                android:layout_height="100dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#1F1B33"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_popup_reminder"
-                        app:tint="#FF5722"/>
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        app:tint="#2196F3" />
+
                     <TextView
-                        android:id="@+id/tvPendingCount"
+                        android:id="@+id/tvActiveStudents"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:layout_marginTop="8dp"
+                        android:text="124"
                         android:textColor="#FFFFFF"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="5dp"/>
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pending Req."
+                        android:text="Students"
                         android:textColor="#B0B0B0"
-                        android:textSize="11sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-        </GridLayout>
+        </LinearLayout>
 
-        <!-- PENDING REQUESTS SECTION -->
-        <TextView
-            android:id="@+id/tvRecent"
-            android:layout_width="wrap_content"
+        <!-- SECTION: ADMISSION REQUESTS -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Admission Requests"
-            android:textColor="#FFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="24dp"
-            app:layout_constraintTop_toBottomOf="@id/gridStats"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <!-- Empty State -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Admissions"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnViewAllRequests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View All"
+                android:textColor="#FFCA28"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Empty State for Requests -->
         <LinearLayout
             android:id="@+id/emptyStateView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_border_dashed"
             android:gravity="center"
-            android:padding="30dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/tvRecent">
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@android:drawable/ic_menu_agenda"
-                app:tint="#5C4DAd"/>
+            android:orientation="vertical"
+            android:visibility="gone">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No pending requests"
-                android:textColor="#9FA8DA"
-                android:layout_marginTop="10dp"/>
+                android:text="All caught up! No pending requests."
+                android:textColor="#80FFFFFF" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvRequests"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:nestedScrollingEnabled="false"
-            app:layout_constraintTop_toBottomOf="@id/tvRecent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            tools:listitem="@layout/item_teacher_request" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>
