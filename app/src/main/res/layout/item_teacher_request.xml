@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    app:cardBackgroundColor="#2E2345"
-    app:cardCornerRadius="15dp"
-    app:cardElevation="4dp">
+    app:cardBackgroundColor="#44000000"
+    app:cardCornerRadius="35dp"
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Wants to join: Physics"
-            android:textColor="#B0B0B0"
+            android:textColor="#FFFFFFFF"
             android:textSize="14sp"
             android:layout_marginStart="10dp"
             app:layout_constraintStart_toEndOf="@id/imgStudent"

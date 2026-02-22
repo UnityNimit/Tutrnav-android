@@ -44,9 +44,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        app:cardBackgroundColor="#2F2B4B"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="10dp"
+        app:cardBackgroundColor="#44000000"
+        app:cardCornerRadius="35dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -76,8 +76,8 @@
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
-                    android:backgroundTint="#1F1B33"
-                    app:cornerRadius="20dp"
+                    android:backgroundTint="#44000000"
+                    app:cornerRadius="35dp"
                     app:elevation="0dp"/>
 
                 <!-- Login Button (Lighter/Active) -->
@@ -93,7 +93,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:backgroundTint="#E0E0E0"
-                    app:cornerRadius="20dp"
+                    app:cornerRadius="35dp"
                     app:elevation="0dp"/>
             </LinearLayout>
 

@@ -7,7 +7,8 @@
     android:layout_marginHorizontal="15dp"
     app:cardCornerRadius="35dp"
     app:cardElevation="0dp"
-    app:strokeWidth="0dp"
+    app:strokeWidth="5dp"
+    app:strokeColor="#44000000"
     android:backgroundTint="#FF000000">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -28,13 +29,13 @@
             <!-- Floating Search Button (Top Right) -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btnSearchMap"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 app:cardCornerRadius="35dp"
                 app:cardBackgroundColor="#44000000"
-                app:cardElevation="8dp"
+                app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -55,7 +56,7 @@
                 android:layout_marginBottom="110dp"
                 app:cardCornerRadius="25dp"
                 app:cardBackgroundColor="#44000000"
-                app:cardElevation="8dp"
+                app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -85,11 +86,11 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="#5C4D99"
+                app:cardBackgroundColor="#FF4F5CA4"
                 app:cardCornerRadius="30dp"
-                app:cardElevation="10dp"
-                app:strokeColor="#7060B0"
-                app:strokeWidth="1dp">
+                app:cardElevation="0dp"
+                app:strokeColor="#44000000"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -189,7 +190,7 @@
                     <androidx.core.widget.NestedScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="#5C4D99"
+                        android:background="#FF4F5CA4"
                         android:fillViewport="true">
 
                         <LinearLayout

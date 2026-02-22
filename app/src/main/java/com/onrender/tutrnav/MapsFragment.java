@@ -3,6 +3,7 @@ package com.onrender.tutrnav;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -94,7 +96,7 @@ public class MapsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         initViews(view);
-        setupMinimalistMap();
+        setupMapStyle(); // Sets up the White Land / Neon Blue Road style
         setupBottomSheet();
         checkLocationPermission();
         fetchTuitions();
@@ -166,31 +168,52 @@ public class MapsFragment extends Fragment {
         animator.start();
     }
 
-    private void setupMinimalistMap() {
-        XYTileSource darkCleanSource = new XYTileSource(
-                "CartoDB_Dark_No_Labels",
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupMapStyle() {
+        // --- 1. WHITE LAND / NO LABELS SOURCE ---
+        // Using "CartoDB Light No Labels".
+        // This provides a pure clean base: White land, Light Gray roads, No Text.
+        XYTileSource cleanWhiteSource = new XYTileSource(
+                "CartoDB_Light_No_Labels",
                 1, 20, 256, ".png",
                 new String[] {
-                        "https://a.basemaps.cartocdn.com/dark_nolabels/",
-                        "https://b.basemaps.cartocdn.com/dark_nolabels/",
-                        "https://c.basemaps.cartocdn.com/dark_nolabels/"
+                        "https://a.basemaps.cartocdn.com/light_nolabels/",
+                        "https://b.basemaps.cartocdn.com/light_nolabels/",
+                        "https://c.basemaps.cartocdn.com/light_nolabels/"
                 },
                 "© OpenStreetMap contributors, © CARTO"
         );
 
-        map.setTileSource(darkCleanSource);
+        map.setTileSource(cleanWhiteSource);
         map.setBuiltInZoomControls(false);
         map.setMultiTouchControls(true);
 
+        // --- 2. SHARP BLUE ROAD FILTER ---
+        // This matrix boosts Blue and slightly reduces Red/Green contrast.
+        // On the white map, this turns the light gray roads into a sharp, cool Steel/Neon Blue
+        // while keeping the land white.
         float[] matrix = {
-                2.8f, 0,    0,    0,   -10,
-                0,    0.2f, 0,    0,   -10,
-                0,    0,    5.0f, 0,   -10,
-                0,    0,    0,    1,    0
+                1f,    0f,    0f,    0f,   0,    // Red: Standard
+                0f,    1f,    0f,    0f,   0,    // Green: Standard
+                0f,    0f,    1.8f,  0f,   0,    // Blue: BOOSTED (Turns gray roads blue)
+                0f,    0f,    0f,    1f,   0     // Alpha
         };
 
         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
         map.getOverlayManager().getTilesOverlay().setColorFilter(filter);
+
+        // --- 3. PREVENT FRAGMENT SWIPING ---
+        map.setOnTouchListener((v, event) -> {
+            int action = event.getAction();
+            if (action == MotionEvent.ACTION_DOWN) {
+                // Lock the parent ViewPager so map scrolls freely
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+            } else if (action == MotionEvent.ACTION_UP) {
+                // Release lock
+                v.getParent().requestDisallowInterceptTouchEvent(false);
+            }
+            return false;
+        });
 
         tuitionMarkersOverlay = new FolderOverlay();
         map.getOverlays().add(tuitionMarkersOverlay);
@@ -237,11 +260,11 @@ public class MapsFragment extends Fragment {
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             marker.setTitle(t.getTitle());
 
-            // --- CHANGED: Using ic_pin for Tuitions ---
-            Drawable icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_pin);
-            if(icon != null) {
-                icon.setTint(Color.parseColor("#FFCA28"));
-                marker.setIcon(icon);
+            // --- 4. ICON: TUITION PIN (48dp) ---
+            Bitmap iconBitmap = getBitmapFromVectorDrawable(requireContext(), R.drawable.ic_pin, "#FFCA28", 48, 48);
+            if(iconBitmap != null) {
+                Drawable d = new android.graphics.drawable.BitmapDrawable(getResources(), iconBitmap);
+                marker.setIcon(d);
             }
 
             marker.setOnMarkerClickListener((m, mapView) -> {
@@ -386,8 +409,8 @@ public class MapsFragment extends Fragment {
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(requireContext()), map);
         locationOverlay.enableMyLocation();
 
-        // --- CHANGED: Using ic_locator for User ---
-        Bitmap personIcon = getBitmapFromVectorDrawable(requireContext(), R.drawable.ic_locator, "#00E5FF");
+        // --- 5. ICON: USER LOCATOR (40dp) ---
+        Bitmap personIcon = getBitmapFromVectorDrawable(requireContext(), R.drawable.ic_locator, "#00E5FF", 40, 40);
         if (personIcon != null) {
             locationOverlay.setPersonIcon(personIcon);
             locationOverlay.setDirectionIcon(personIcon);
@@ -417,11 +440,20 @@ public class MapsFragment extends Fragment {
         });
     }
 
-    private Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, String colorHex) {
+    // --- HELPER METHOD: RESIZABLE ICONS ---
+    private Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, String colorHex, int widthDp, int heightDp) {
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         if (drawable == null) return null;
+
         drawable.setTint(Color.parseColor(colorHex));
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        // Convert DP to Pixels for sizing
+        float density = context.getResources().getDisplayMetrics().density;
+        int widthPx = (int) (widthDp * density);
+        int heightPx = (int) (heightDp * density);
+
+        // Create Bitmap with specified size
+        Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
