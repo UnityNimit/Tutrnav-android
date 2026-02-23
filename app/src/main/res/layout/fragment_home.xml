@@ -99,7 +99,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerInside"
-                            android:src="@drawable/music" />
+                            android:src="@drawable/musicboy" />
                     </androidx.cardview.widget.CardView>
                     <TextView
                         android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerInside"
-                            android:src="@drawable/maths"/>
+                            android:src="@drawable/grade9boy"/>
                     </androidx.cardview.widget.CardView>
                     <TextView
                         android:layout_width="wrap_content"
@@ -146,20 +146,27 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginEnd="20dp">
+
                     <androidx.cardview.widget.CardView
                         android:layout_width="65dp"
                         android:layout_height="65dp"
                         app:cardCornerRadius="22dp"
-                        app:cardElevation="0dp"/>
+                        app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Code"
-                        android:textColor="#E0E0E0"
-                        android:layout_marginTop="8dp"
-                        android:textSize="13sp"
-                        android:fontFamily="sans-serif-medium"/>
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/codeboy"/>
+
+                    </androidx.cardview.widget.CardView> <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Code"
+                    android:textColor="#E0E0E0"
+                    android:layout_marginTop="8dp"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif-medium"/>
                 </LinearLayout>
 
             </LinearLayout>
