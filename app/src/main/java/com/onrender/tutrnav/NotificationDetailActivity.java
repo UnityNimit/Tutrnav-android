@@ -3,8 +3,10 @@ package com.onrender.tutrnav;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build; // Import Build
 import android.os.Bundle;
 import android.text.util.Linkify;
+import android.view.WindowManager; // Import WindowManager
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +27,10 @@ public class NotificationDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_detail);
 
-        // 1. Initialize Views
+        // 1. APPLY NATIVE BLUR (Android 12+)
+        applyNativeBlur();
+
+        // 2. Initialize Views
         ShapeableImageView imgTeacher = findViewById(R.id.imgTeacherDetail);
         TextView tvTitle = findViewById(R.id.tvDetailTitle);
         TextView tvTuition = findViewById(R.id.tvDetailTuition);
@@ -35,7 +40,7 @@ public class NotificationDetailActivity extends AppCompatActivity {
         ImageView btnDismiss = findViewById(R.id.btnDismiss);
         MaterialButton btnDelete = findViewById(R.id.btnDeleteNotif);
 
-        // 2. Retrieve Data from Intent
+        // 3. Retrieve Data
         String id = getIntent().getStringExtra("id");
         String title = getIntent().getStringExtra("title");
         String tuition = getIntent().getStringExtra("tuition");
@@ -44,58 +49,69 @@ public class NotificationDetailActivity extends AppCompatActivity {
         String type = getIntent().getStringExtra("type");
         String photoUrl = getIntent().getStringExtra("teacherPhoto");
 
-        // 3. Bind Text Data
+        // 4. Bind Data
         tvTitle.setText(title != null ? title : "Teacher");
         tvTuition.setText(tuition != null ? tuition : "Class Update");
         tvBody.setText(body != null ? body : "");
         tvDate.setText(time != null ? time : "");
 
-        // 4. Legendary Feature: Auto-Linkify
-        // This makes "https://zoom.us/..." clickable immediately
         Linkify.addLinks(tvBody, Linkify.WEB_URLS);
 
-        // 5. Load Teacher Profile Picture
         if (photoUrl != null && !photoUrl.isEmpty()) {
-            Glide.with(this)
-                    .load(photoUrl)
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
-                    .circleCrop()
-                    .into(imgTeacher);
+            Glide.with(this).load(photoUrl).circleCrop().into(imgTeacher);
         } else {
             imgTeacher.setImageResource(R.mipmap.ic_launcher);
         }
 
-        // 6. Handle Badge Type (Color & Text)
+        // Handle Badge Type
         if (type == null) type = "NORMAL";
         tvType.setText(type);
 
         switch (type) {
             case "FEE":
-                tvType.setTextColor(Color.parseColor("#4CAF50")); // Green
-                tvType.setBackgroundResource(R.drawable.bg_circle_dark); // Ensure you have this drawable or generic
+                tvType.setTextColor(Color.parseColor("#4CAF50"));
+                tvType.setBackgroundResource(R.drawable.bg_circle_dark);
                 break;
             case "IMPORTANT":
-                tvType.setTextColor(Color.parseColor("#FF5252")); // Red
+                tvType.setTextColor(Color.parseColor("#FF5252"));
                 break;
             default:
-                tvType.setTextColor(Color.parseColor("#2196F3")); // Blue
+                tvType.setTextColor(Color.parseColor("#2196F3"));
                 break;
         }
 
-        // 7. Click Listeners
+        // Click Listeners
         btnDismiss.setOnClickListener(v -> finish());
 
         btnDelete.setOnClickListener(v -> {
             if (id != null) {
                 dismissNotificationLocal(id);
                 Toast.makeText(this, "Notification Removed", Toast.LENGTH_SHORT).show();
-                finish(); // Close activity and go back to list
+                finish();
             }
         });
     }
 
-    // Stores the ID in SharedPreferences so it doesn't show up in the list again
+    private void applyNativeBlur() {
+        // This only works on Android 12 (API 31) and above.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                // Radius: 1 to 150. 30 is a nice frosted glass effect.
+                getWindow().setBackgroundBlurRadius(30);
+                // Ensure flags are set to allow the blur to happen
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+            } catch (Exception e) {
+                // Fallback for devices that might throw errors on this API
+            }
+        } else {
+            // FALLBACK FOR OLDER PHONES:
+            // Since they can't blur across activities, we just dim the background
+            // so the text is readable.
+            getWindow().setDimAmount(0.6f);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+    }
+
     private void dismissNotificationLocal(String id) {
         SharedPreferences prefs = getSharedPreferences("Notifications", Context.MODE_PRIVATE);
         Set<String> dismissed = new HashSet<>(prefs.getStringSet("dismissed", new HashSet<>()));

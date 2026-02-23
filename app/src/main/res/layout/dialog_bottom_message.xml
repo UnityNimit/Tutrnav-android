@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_bottom_sheet"
+    android:background="#44000000"
     android:orientation="vertical"
     android:padding="24dp">
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Sending to 14 students"
-        android:textColor="#B0B0B0"
+        android:textColor="#FFFFFFFF"
         android:textSize="14sp" />
 
     <!-- Quick Replies -->

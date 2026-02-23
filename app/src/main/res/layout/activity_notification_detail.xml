@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#6555C0"
-    tools:context=".NotificationDetailActivity">
+    android:layout_height="match_parent">
 
-    <!-- TOP TOOLBAR AREA -->
+    <!-- BACKGROUND DIMMER (Clickable to prevent clicks passing through) -->
+    <View
+        android:id="@+id/backgroundDimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!-- TOP TOOLBAR AREA (Only Back Arrow now) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -21,46 +28,35 @@
             android:layout_height="45dp"
             android:background="@drawable/bg_circle_dark"
             android:padding="12dp"
-            android:src="@drawable/ic_arrow_back"
+            android:src="@drawable/ic_back_arrow"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="#FFFFFF" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Message Details"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/btnDismiss"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btnDismiss" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- THE MESSAGE CARD -->
+    <!-- THE MESSAGE CARD (Height restricted to prevent over-stretching) -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardMessage"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="24dp"
-        app:cardBackgroundColor="#231B33"
-        app:cardCornerRadius="32dp"
+        app:constrainedHeight="true"
+        app:layout_constraintHeight_max="500dp"
+        app:cardBackgroundColor="#FF000000"
+        app:cardCornerRadius="35dp"
         app:cardElevation="20dp"
         app:layout_constraintBottom_toTopOf="@+id/btnDeleteNotif"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintVertical_bias="0.4">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- HEADER: Profile & Name -->
+            <!-- HEADER -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -71,9 +67,7 @@
                     android:layout_height="60dp"
                     android:scaleType="centerCrop"
                     android:src="@mipmap/ic_launcher"
-                    app:shapeAppearanceOverlay="@style/CircleImage"
-                    app:strokeColor="#5C4DAd"
-                    app:strokeWidth="2dp" />
+                    app:shapeAppearanceOverlay="@style/CircleImage"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -111,7 +105,7 @@
             <!-- SCROLLABLE BODY -->
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fillViewport="true">
 
@@ -121,17 +115,17 @@
                     android:layout_height="wrap_content"
                     android:autoLink="web"
                     android:lineSpacingExtra="6dp"
-                    android:text="Notification content goes here..."
+                    android:text="Body..."
                     android:textColor="#E0E0E0"
                     android:textColorLink="#FFCA28"
                     android:textSize="16sp" />
             </androidx.core.widget.NestedScrollView>
 
-            <!-- FOOTER: Date/Time -->
+            <!-- FOOTER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -156,7 +150,7 @@
                     android:id="@+id/tvDetailDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="12 Jan, 10:30 AM"
+                    android:text="Date"
                     android:textColor="#5C5670"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -164,24 +158,24 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- ACTION BUTTON: DELETE/DISMISS -->
+    <!-- ROUND ICON-ONLY DELETE BUTTON -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDeleteNotif"
-        android:layout_width="match_parent"
+        android:layout_width="65dp"
         android:layout_height="65dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="30dp"
-        android:text="Remove Notification"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:layout_marginBottom="40dp"
         app:backgroundTint="#F44336"
-        app:cornerRadius="20dp"
-        app:icon="@android:drawable/ic_menu_delete"
-        app:iconGravity="textStart"
-        app:iconPadding="10dp"
+        app:cornerRadius="32.5dp"
+        app:icon="@drawable/ic_bin"
+        app:iconPadding="0dp"
+        app:iconSize="28dp"
         app:iconTint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

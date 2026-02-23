@@ -234,7 +234,6 @@ public class ScheduleActivity extends AppCompatActivity {
                 tvStatus      = v.findViewById(R.id.tvStatus);
                 tvLocation    = v.findViewById(R.id.tvLocation);
                 imgTutor      = v.findViewById(R.id.imgTutor);
-                viewColorBar  = v.findViewById(R.id.viewColorBar);
                 btnAction     = v.findViewById(R.id.btnAction);
             }
         }

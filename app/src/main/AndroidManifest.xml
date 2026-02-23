@@ -7,35 +7,27 @@
     <!-- 1. PERMISSIONS                                 -->
     <!-- ============================================== -->
 
-    <!-- Network: Required for Firebase, Cloudinary, and Map Tiles -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <!-- Location: Required for MapsFragment and PickLocationActivity -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- Storage: Required for caching Map tiles and picking Profile/Banner images -->
-    <!-- Android 13+ (API 33+) -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <!-- Android 12 and below (API 32-) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
-    <!-- Notifications: Required for Android 13+ to show alerts -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- ============================================== -->
-    <!-- 2. QUERIES (Android 11+ Visibility)            -->
+    <!-- 2. QUERIES                                     -->
     <!-- ============================================== -->
     <queries>
-        <!-- Allows opening Email apps for the "Support" button -->
         <intent>
             <action android:name="android.intent.action.SENDTO" />
             <data android:scheme="mailto" />
         </intent>
-        <!-- Allows opening external Maps (Google Maps/Waze) if needed -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="geo" />
@@ -60,7 +52,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <!-- Google Play Services Version (Good practice for Firebase) -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -135,22 +126,26 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!--
+           CRITICAL UPDATE HERE:
+           Added android:theme to apply the transparent style.
+           This allows the BlurView to see the activity behind it.
+        -->
         <activity
             android:name=".NotificationDetailActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.TutrNav.Transparent" />
 
         <!-- ============================================== -->
         <!-- 6. TEACHER FLOW                                -->
         <!-- ============================================== -->
-        <!-- adjustResize is CRITICAL here for the Tuition Upload Form -->
         <activity
             android:name=".TeacherHomeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- OSM Map for picking location -->
         <activity
             android:name=".PickLocationActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -166,7 +161,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- Legacy Activity (Kept to prevent crashes if referenced) -->
         <activity
             android:name=".MainActivity"
             android:exported="false"

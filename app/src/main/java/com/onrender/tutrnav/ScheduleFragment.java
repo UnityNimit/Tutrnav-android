@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class ScheduleFragment extends Fragment {
 
@@ -261,8 +260,11 @@ public class ScheduleFragment extends Fragment {
             holder.tvStatus.setBackgroundResource(R.drawable.bg_status_chip);
 
             // 5. Dynamic Color Bar (Hash the subject name to get a consistent unique color)
-            int color = getColorForSubject(title);
-            holder.viewColorBar.setBackgroundColor(color);
+            // FIX: Ensure viewColorBar is not null before setting color
+            if (holder.viewColorBar != null) {
+                int color = getColorForSubject(title);
+                holder.viewColorBar.setBackgroundColor(color);
+            }
 
             // 6. Image (Teacher)
             Glide.with(context)
@@ -312,9 +314,13 @@ public class ScheduleFragment extends Fragment {
                 tvTopic = v.findViewById(R.id.tvTopic);
                 tvTutorName = v.findViewById(R.id.tvTutorName);
                 tvLocation = v.findViewById(R.id.tvLocation);
-                viewColorBar = v.findViewById(R.id.viewColorBar);
                 imgTutor = v.findViewById(R.id.imgTutor);
                 btnAction = v.findViewById(R.id.btnAction);
+
+                // FIX: Initialize viewColorBar.
+                // Since item_schedule.xml has a 'divider' view but no 'viewColorBar' ID,
+                // we map it to the divider to act as the colored element.
+                viewColorBar = v.findViewById(R.id.divider);
             }
         }
     }

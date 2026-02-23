@@ -1,23 +1,37 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Tutrnav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand colors -->
+    <!-- ================================================= -->
+    <!-- 1. BASE APP THEME                                 -->
+    <!-- ================================================= -->
+    <style name="Theme.Tutrnav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary Brand Colors -->
         <item name="colorPrimary">#6555C0</item>
         <item name="colorPrimaryVariant">#3700B3</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <!-- Status bar color. -->
+
+        <!-- Secondary Brand Colors (Gold/Yellow accents used in your layouts) -->
+        <item name="colorSecondary">#FFCA28</item>
+        <item name="colorSecondaryVariant">#FFB300</item>
+        <item name="colorOnSecondary">#000000</item>
+
+        <!-- Status Bar Configuration -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Set to true if you use a light background, false for dark background -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
-    <style name="Theme.Tutrnav" parent="Base.Theme.Tutrnav" />
-
-    <!-- Transparent Theme for Popups -->
-    <style name="Theme.Transparent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <!-- Update your Transparent Theme -->
+    <style name="Theme.TutrNav.Transparent" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.7</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item> <!-- Keep false -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+
+        <!-- ADD THIS LINE: Enables Native Blur for Android 12+ -->
+        <item name="android:windowBlurBehindEnabled" tools:targetApi="s">true</item>
     </style>
 </resources>

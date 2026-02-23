@@ -99,7 +99,6 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             tvDuration = itemView.findViewById(R.id.tvDuration);
             tvLocation = itemView.findViewById(R.id.tvLocation);
             tvStatus = itemView.findViewById(R.id.tvStatus);
-            viewColorBar = itemView.findViewById(R.id.viewColorBar);
             imgTutor = itemView.findViewById(R.id.imgTutor);
             btnAction = itemView.findViewById(R.id.btnAction);
         }
