@@ -60,7 +60,6 @@ public class TeacherStudentsFragment extends Fragment {
     // Filtered Output
     private final List<EnrollmentModel> displayList = new ArrayList<>();
 
-    // --- State Variables ---
     private String selectedTuitionId = "ALL";
     private String selectedTuitionTitle = "All Students";
     private String currentSearchQuery = "";
