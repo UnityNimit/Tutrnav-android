@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 70% Black for perfect Glassmorphism -->
+    <solid android:color="#70000000" />
+
+    <!-- Universal 35dp Radius -->
+    <corners android:radius="35dp" />
+</shape>

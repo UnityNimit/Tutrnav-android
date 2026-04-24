@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="15dp"
+    android:background="@android:color/transparent"
+    android:fillViewport="true"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="120dp">
+
+        <!-- 1. SEARCH BAR -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/searchCard"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="0dp"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="35dp"
+            app:cardBackgroundColor="#B3000000"
+            app:cardElevation="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="25dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Find your tutor..."
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-medium"/>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="#FFFFFFFF" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 2. CATEGORIES TITLE -->
+        <TextView
+            android:id="@+id/tvCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Explore"
+            android:textSize="26sp"
+            android:textColor="#FFFFFF"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.02"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="0dp"
+            app:layout_constraintTop_toBottomOf="@id/searchCard"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- 3. SCROLLABLE CATEGORIES LIST (10 Items) -->
+        <HorizontalScrollView
+            android:id="@+id/hsvCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:scrollbars="none"
+            android:clipToPadding="false"
+            android:paddingStart="24dp"
+            android:paddingEnd="4dp"
+            app:layout_constraintTop_toBottomOf="@id/tvCategories">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Item 1: 10th -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="10th" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 2: Music -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Music" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 3: Python -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Python" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 4: 11th -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="11th" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 5: 12th -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="12th" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 6: Kindergarten -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kindergarten" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 7: Elementary -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Elementary" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 8: English -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="English" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 9: Art -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Art" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+                <!-- Item 10: Urdu -->
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:layout_marginEnd="20dp">
+                    <androidx.cardview.widget.CardView android:layout_width="65dp" android:layout_height="65dp" app:cardCornerRadius="22dp" app:cardElevation="0dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerInside" android:src="@mipmap/ic_launcher" />
+                    </androidx.cardview.widget.CardView>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Urdu" android:textColor="#E0E0E0" android:layout_marginTop="8dp" android:textSize="13sp" android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- 4. DISCOVER HEADER -->
+        <TextView
+            android:id="@+id/tvDiscover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discover"
+            android:textSize="26sp"
+            android:textColor="#FFFFFF"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.02"
+            android:layout_marginTop="35dp"
+            android:layout_marginStart="0dp"
+            app:layout_constraintTop_toBottomOf="@id/hsvCategories"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- 5. CAPSULE FILTERS & ACTION BUTTONS -->
+        <HorizontalScrollView
+            android:id="@+id/hsvFilters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginTop="15dp"
+            android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/tvDiscover">
+            <!-- REMOVED: android:paddingStart="24dp" to perfectly align with tvDiscover -->
+
+            <!-- Added gravity center_vertical so text and icons align perfectly -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- 1. Trending Button (Text) -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="50dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardElevation="2dp"
+                    android:layout_marginEnd="12dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trending"
+                        android:textColor="#FF000000"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="10dp"
+                        android:textSize="14sp"/>
+                </androidx.cardview.widget.CardView>
+
+                <!-- 2. Star Icon Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardBackgroundColor="#B3000000"
+                    app:cardElevation="0dp"
+                    android:layout_marginEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_star"
+                        app:tint="#FFFFFF" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- 3. Heart Icon Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardBackgroundColor="#B3000000"
+                    app:cardElevation="0dp"
+                    android:layout_marginEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_heart"
+                        app:tint="#FFFFFF" />
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- 6. DISCOVER SLIDES (Interactive Stack) -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpDiscover"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:paddingHorizontal="40dp"
+            app:layout_constraintTop_toBottomOf="@id/hsvFilters"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app_gradient"
+    tools:context=".ui.common.ProfileActivity">
+
+    <!-- ================= HEADER SECTION ================= -->
+
+    <!-- Back Button inside a perfect #44000000 Circle -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        app:cardBackgroundColor="#B3000000"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="14dp"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Centered Profile Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profile"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
+    <!-- ================= MAIN SCROLL CONTENT ================= -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="40dp">
+
+            <!-- PROFILE IMAGE CONTAINER -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profileImageContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp">
+
+                <!-- Larger Profile Picture -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgProfile"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:padding="2dp"
+                    android:src="@mipmap/ic_launcher"
+                    android:scaleType="centerCrop"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/CircleImage"
+                    app:strokeColor="#44000000"
+                    app:strokeWidth="5dp" />
+
+                <!-- The Camera Icon Overlay -->
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_camera"
+                    app:tint="#FFFFFF"
+                    android:background="@drawable/bg_container"
+                    android:padding="8dp"
+                    android:elevation="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/imgProfile"
+                    app:layout_constraintEnd_toEndOf="@id/imgProfile" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- NAME & EMAIL TITLES (Centered & No BG) -->
+            <TextView
+                android:id="@+id/tvProfileName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Loading..."
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:id="@+id/tvProfileEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="user@email.com"
+                android:textColor="#B39DDB"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <!-- DETAILS SECTION -->
+            <LinearLayout
+                android:id="@+id/detailsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="40dp">
+
+                <!-- PHONE NUMBER -->
+                <TextView
+                    android:text="Phone Number"
+                    android:textColor="#B0B0B0"
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"/>
+                <TextView
+                    android:id="@+id/tvProfilePhone"
+                    android:text="Not Set"
+                    android:background="@drawable/bg_container"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <!-- EXPERIENCE -->
+                <TextView
+                    android:text="Experience"
+                    android:textColor="#B0B0B0"
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"/>
+                <TextView
+                    android:id="@+id/tvProfileExperience"
+                    android:text="Add Experience..."
+                    android:background="@drawable/bg_container"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <!-- PASSWORD -->
+                <TextView
+                    android:text="Password"
+                    android:textColor="#B0B0B0"
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_container"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/tvProfilePass"
+                        android:text="***************"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:padding="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/btnViewPass"/>
+
+                    <ImageView
+                        android:id="@+id/btnViewPass"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_eye"
+                        android:padding="14dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        app:tint="#B0B0B0"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- BUTTON GRID -->
+            <GridLayout
+                android:id="@+id/gridOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="2"
+                android:layout_marginTop="20dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPolicies"
+                    style="@style/Widget.MaterialComponents.Button.Icon"
+                    android:layout_width="0dp" android:layout_height="65dp" android:layout_columnWeight="1" android:layout_margin="6dp"
+                    android:text="Policies" android:textAllCaps="false"
+                    android:backgroundTint="#44000000" app:cornerRadius="35dp"
+                    app:icon="@drawable/ic_policy" app:iconGravity="textStart"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSettings"
+                    style="@style/Widget.MaterialComponents.Button.Icon"
+                    android:layout_width="0dp" android:layout_height="65dp" android:layout_columnWeight="1" android:layout_margin="6dp"
+                    android:text="Settings" android:textAllCaps="false"
+                    android:backgroundTint="#44000000" app:cornerRadius="35dp"
+                    app:icon="@drawable/ic_settings" app:iconGravity="textStart"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSupport"
+                    style="@style/Widget.MaterialComponents.Button.Icon"
+                    android:layout_width="0dp" android:layout_height="65dp" android:layout_columnWeight="1" android:layout_margin="6dp"
+                    android:text="Support" android:textAllCaps="false"
+                    android:backgroundTint="#44000000" app:cornerRadius="35dp"
+                    app:icon="@drawable/ic_heart" app:iconGravity="textStart"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShare"
+                    style="@style/Widget.MaterialComponents.Button.Icon"
+                    android:layout_width="0dp" android:layout_height="65dp" android:layout_columnWeight="1" android:layout_margin="6dp"
+                    android:text="Share" android:textAllCaps="false"
+                    android:backgroundTint="#44000000" app:cornerRadius="35dp"
+                    app:icon="@drawable/ic_share" app:iconGravity="textStart"/>
+            </GridLayout>
+
+            <!-- ================= IDENTICAL SIDE-BY-SIDE BUTTONS ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="25dp"
+                android:baselineAligned="false">
+
+                <!-- Delete Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDeleteAccount"
+                    android:layout_width="0dp"
+                    android:layout_height="65dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Delete"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#F44336"
+                    android:backgroundTint="#44000000"
+                    app:cornerRadius="35dp"
+                    app:icon="@drawable/ic_bin"
+                    app:iconTint="#F44336"
+                    app:iconGravity="textStart"/>
+
+                <!-- Sign Out Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSignOut"
+                    android:layout_width="0dp"
+                    android:layout_height="65dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Sign Out"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#F44336"
+                    app:cornerRadius="35dp"
+                    app:icon="@drawable/ic_signout"
+                    app:iconTint="#FFFFFF"
+                    app:iconGravity="textStart"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
