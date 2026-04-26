@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="15dp"
+    android:layout_marginVertical="10dp"
+    app:cardCornerRadius="35dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="5dp"
+    app:strokeColor="#44000000"
+    android:backgroundTint="#FF000000">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#6555C0">
+
+        <!-- ================= 1. FULL SCREEN MAP LAYER ================= -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- Floating Search Button (Top Right) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnSearchMap"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                app:cardCornerRadius="27.5dp"
+                app:cardBackgroundColor="#B3000000"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_search"
+                    android:padding="14dp"
+                    app:tint="#FFFFFFFF"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Current Location Button -->
+            <!-- 120dp keeps it perfectly 20dp above the resting 100dp bottom sheet -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnMyLocation"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="120dp"
+                app:cardCornerRadius="27.5dp"
+                app:cardBackgroundColor="#B3000000"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_locator"
+                    android:padding="12dp"
+                    app:tint="#FFFFFFFF"/>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- ================= 2. FLOATING BOTTOM SHEET LAYER ================= -->
+        <!--
+             Height is wrap_content to auto-adjust.
+             peekHeight is precisely calculated (85dp card height + 15dp bottom margin = 100dp)
+        -->
+        <FrameLayout
+            android:id="@+id/bottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="100dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <!-- THE ACTUAL FLOATING CARD -->
+            <!-- Symmetric 15dp margins on all 4 sides for perfect floating aesthetics -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                app:cardBackgroundColor="#FF4F5CA4"
+                app:cardCornerRadius="35dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#44000000"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- ===== PEEK ROW (Always Visible: Height = 15+55+15 = 85dp) ===== -->
+                    <LinearLayout
+                        android:id="@+id/peekLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="15dp"
+                        android:paddingVertical="15dp">
+
+                        <!-- Price Tag -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="55dp"
+                            app:cardCornerRadius="27.5dp"
+                            app:cardBackgroundColor="#B3000000"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:paddingHorizontal="20dp">
+
+                                <TextView
+                                    android:id="@+id/tvSheetPrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    tools:text="₹1000"
+                                    android:textColor="#FFCA28"
+                                    android:textStyle="bold"
+                                    android:textSize="22sp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="/mo"
+                                    android:textColor="#B0B0B0"
+                                    android:textSize="14sp"
+                                    android:layout_marginStart="4dp"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Spacer -->
+                        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
+
+                        <!-- Toggle Arrow Button -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/btnSheetToggleCard"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_marginEnd="10dp"
+                            app:cardCornerRadius="27.5dp"
+                            app:cardBackgroundColor="#B3000000"
+                            app:cardElevation="0dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:id="@+id/btnSheetToggle"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/ic_arrow_up_solid"
+                                android:padding="12dp"
+                                app:tint="#FFFFFF"/>
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- THE CALL BUTTON WITH RINGING ANIMATION -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/btnSheetCall"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            app:cardCornerRadius="27.5dp"
+                            app:cardBackgroundColor="#B3000000"
+                            app:cardElevation="0dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:id="@+id/imgSheetCallIcon"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/avd_phone_ring"
+                                android:padding="12dp"
+                                app:tint="#FFFFFF"/>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <!-- ===== EXPANDED CONTENT (Scrollable, Wrap Content) ===== -->
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FF4F5CA4"
+                        android:fillViewport="true"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="24dp"
+                            android:paddingBottom="24dp">
+
+                            <!-- 1. Class Name & Tags -->
+                            <TextView
+                                android:id="@+id/tvSheetTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Physics Masterclass"
+                                android:textColor="#FFFFFF"
+                                android:textSize="26sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="5dp"/>
+
+                            <TextView
+                                android:id="@+id/tvSheetTags"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Science • 11th Grade • Online"
+                                android:textColor="#D1C4E9"
+                                android:textSize="14sp"
+                                android:layout_marginTop="4dp"/>
+
+                            <!-- Divider -->
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="#20FFFFFF"
+                                android:layout_marginVertical="20dp"/>
+
+                            <!-- 2. Teacher Profile Row -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <!-- Teacher Circular Image -->
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/imgTeacher"
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
+                                    android:scaleType="centerCrop"
+                                    tools:src="@mipmap/ic_launcher"
+                                    app:shapeAppearanceOverlay="@style/CircleImage"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_marginStart="16dp">
+
+                                    <TextView
+                                        android:id="@+id/tvTeacherName"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        tools:text="Dr. Alakh Pandey"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="18sp"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:id="@+id/tvTeacherExp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        tools:text="10+ Years Experience"
+                                        android:textColor="#FFCA28"
+                                        android:textSize="13sp"
+                                        android:layout_marginTop="2dp"/>
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <!-- 3. Dark Description Box (#44000000 with 35dp radius) -->
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="25dp"
+                                app:cardBackgroundColor="#B3000000"
+                                app:cardCornerRadius="35dp"
+                                app:cardElevation="0dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="24dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="About this Class"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"
+                                        android:textSize="16sp"/>
+
+                                    <TextView
+                                        android:id="@+id/tvSheetDesc"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        tools:text="Join this comprehensive physics masterclass designed for high school students. We will cover advanced mechanics, thermodynamics, and quantum theory basics with interactive weekly tests."
+                                        android:textColor="#E0E0E0"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="10dp"
+                                        android:lineSpacingExtra="6dp"/>
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- 4. Action Buttons -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="25dp"
+                                android:gravity="center_vertical">
+
+                                <!-- Enroll Button -->
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnEnroll"
+                                    android:layout_width="0dp"
+                                    android:layout_height="60dp"
+                                    android:layout_weight="1"
+                                    android:layout_marginEnd="12dp"
+                                    android:text="Enroll Now"
+                                    android:textColor="#2E2345"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    app:cornerRadius="30dp"
+                                    app:elevation="0dp"
+                                    app:backgroundTint="#FFCA28"/>
+
+                                <!-- Circular Hazard/Report Button -->
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnReport"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    app:icon="@drawable/ic_hazard"
+                                    app:iconTint="#FFFFFF"
+                                    app:iconGravity="textStart"
+                                    app:iconPadding="0dp"
+                                    app:iconSize="28dp"
+                                    app:cornerRadius="30dp"
+                                    app:elevation="0dp"
+                                    app:backgroundTint="#F44336"
+                                    android:insetLeft="0dp"
+                                    android:insetTop="0dp"
+                                    android:insetRight="0dp"
+                                    android:insetBottom="0dp"
+                                    android:padding="0dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </androidx.core.widget.NestedScrollView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</com.google.android.material.card.MaterialCardView>

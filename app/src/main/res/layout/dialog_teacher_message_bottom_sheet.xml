@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_container"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Handle Bar -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#40FFFFFF" />
+
+    <TextView
+        android:id="@+id/tvSheetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Compose Message"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvSheetSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Sending to 14 students"
+        android:textColor="#B0B0B0"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Message Type"
+        android:textColor="#B0B0B0"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:singleSelection="true"
+        app:selectionRequired="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Normal"
+            android:checkable="true"
+            android:checked="true"
+            app:chipBackgroundColor="@color/design_default_color_background"
+            android:textColor="#2E2345" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipImportant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Important"
+            android:checkable="true"
+            app:chipBackgroundColor="#FFEBEE"
+            android:textColor="#F44336" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FEE REMINDER"
+            android:checkable="true"
+            app:chipBackgroundColor="#E8F5E9"
+            android:textColor="#4CAF50"
+            app:chipIcon="@drawable/ic_money"
+            app:chipIconTint="#4CAF50" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- Quick Replies -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipQuick1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class starts in 10 mins!"
+                android:layout_marginEnd="8dp" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipQuick2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Check your assignment"
+                android:layout_marginEnd="8dp" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipQuick3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class rescheduled" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <EditText
+        android:id="@+id/etMessageBody"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_container"
+        android:gravity="top|start"
+        android:hint="Type your message here..."
+        android:padding="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#80FFFFFF" />
+
+    <!-- Send Button (Attachment icon removed & made full width) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSend"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="20dp"
+        android:text="Send Now"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@drawable/bg_btn_grey" />
+
+</LinearLayout>

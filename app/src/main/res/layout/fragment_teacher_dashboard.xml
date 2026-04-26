@@ -14,118 +14,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
-        android:paddingTop="10dp">
+        android:paddingTop="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="Up Next"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="#FFCA28"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="8dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:alpha="0.1"
-                    android:rotation="45"
-                    android:scaleType="fitXY"
-                    android:src="@android:drawable/ic_menu_agenda"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#000000" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:id="@+id/layoutLiveIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_circle_dark"
-                        android:backgroundTint="#2E2345"
-                        android:gravity="center"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp">
-
-                        <View
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            android:background="@drawable/bg_circle_dark"
-                            android:backgroundTint="#FF5252" />
-
-                        <TextView
-                            android:id="@+id/tvLiveStatus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="UPCOMING TODAY"
-                            android:textColor="#FFFFFF"
-                            android:textSize="10sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvHeroTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Loading Schedule..."
-                        android:textColor="#2E2345"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvHeroTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Calculating next class..."
-                        android:textColor="#403060"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnStartClass"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:backgroundTint="#2E2345"
-                        android:text="Start Broadcast Room"
-                        android:textColor="#FFFFFF"
-                        app:cornerRadius="12dp"
-                        app:icon="@android:drawable/ic_media_play"
-                        app:iconTint="#FFFFFF" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp"
-            android:text="Overview"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        <!-- ================= 1. OVERVIEW SECTION ================= -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -133,66 +24,148 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
+            <!-- Income Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#1F1B33"
-                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="#B3000000"
+                app:cardCornerRadius="35dp"
                 app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:orientation="vertical"
                     android:padding="16dp">
-                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/sym_def_app_icon" app:tint="#4CAF50" />
-                    <TextView android:id="@+id/tvTotalEarnings" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="₹0" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Monthly Vol." android:textColor="#B0B0B0" android:textSize="12sp" />
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_money"
+                        app:tint="#4CAF50" />
+
+                    <TextView
+                        android:id="@+id/tvTotalEarnings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        tools:text="₹12,000"
+                        android:textColor="#FFFFFF"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Monthly Income"
+                        android:textColor="#B0B0B0"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Students Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#1F1B33"
-                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="#B3000000"
+                app:cardCornerRadius="35dp"
                 app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:orientation="vertical"
                     android:padding="16dp">
-                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_myplaces" app:tint="#2196F3" />
-                    <TextView android:id="@+id/tvActiveStudents" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="0" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Active Students" android:textColor="#B0B0B0" android:textSize="12sp" />
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_people"
+                        app:tint="#2196F3" />
+
+                    <TextView
+                        android:id="@+id/tvActiveStudents"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        tools:text="45"
+                        android:textColor="#FFFFFF"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Students"
+                        android:textColor="#B0B0B0"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
+        <!-- ================= 2. TODAY'S CLASSES ================= -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="16dp"
+            android:text="Today's Classes"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/emptyClassesView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_container"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No classes scheduled for today."
+                android:textColor="#80FFFFFF" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTodayClasses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/item_teacher_dashboard_class_mini" />
+
+        <!-- ================= 3. REQUESTS ================= -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Action Required"
+                android:text="Requests"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Swipe items to Act"
+                android:text="Swipe to Act"
                 android:textColor="#FFCA28"
                 android:textSize="12sp"
                 android:textStyle="italic" />
@@ -202,12 +175,16 @@
             android:id="@+id/emptyStateView"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_border_dashed"
+            android:background="@drawable/bg_container"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone">
-            <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_input_add" app:tint="#80FFFFFF"/>
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/checkbox_on_background"
+                app:tint="#80FFFFFF"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -220,8 +197,8 @@
             android:id="@+id/rvRequests"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/item_teacher_request" />
+            tools:listitem="@layout/item_teacher_dashboard_request_row" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

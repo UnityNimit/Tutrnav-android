@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1F1B33">
+
+    <!-- OUR NEW LIQUID MORPHING BLOB -->
+    <com.onrender.tutrnav.ui.auth.OrganicBlobView
+        android:id="@+id/organicBlob"
+        android:layout_width="450dp"
+        android:layout_height="450dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <!-- THE AUTO-SLIDING IMAGES -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- THE UNIFIED BOTTOM SHEET -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="60dp"
+        app:cardBackgroundColor="#B3000000"
+        app:cardCornerRadius="35dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <FrameLayout
+                android:id="@+id/containerFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="24dp">
+
+                <!-- ================= STATE 1: ROLE SELECTION ================= -->
+                <LinearLayout
+                    android:id="@+id/layoutRoleSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="invisible" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Choose your path"
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.widget.Button
+                            android:id="@+id/btnRoleTeacher"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_black"
+                            android:text="Teacher"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <android.widget.Button
+                            android:id="@+id/btnRoleStudent"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_grey"
+                            android:text="Student"
+                            android:textAllCaps="false"
+                            android:textColor="#000000"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- ================= STATE 2: AUTH SELECTION (INTERMEDIARY) ================= -->
+                <LinearLayout
+                    android:id="@+id/layoutAuthSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp">
+
+                        <ImageView
+                            android:id="@+id/btnBackToRole"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_back_arrow"
+                            app:tint="#FFFFFF" />
+
+                        <TextView
+                            android:id="@+id/tvSelectedRole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Student Login"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="25dp"
+                        android:orientation="horizontal">
+
+                        <android.widget.Button
+                            android:id="@+id/btnGoToSignIn"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_black"
+                            android:text="Login"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <android.widget.Button
+                            android:id="@+id/btnGoToSignUp"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_grey"
+                            android:text="Register"
+                            android:textAllCaps="false"
+                            android:textColor="#000000"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!-- All 4 Social Platforms -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView android:id="@+id/btnAuthGoogle" android:layout_width="55dp" android:layout_height="55dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/google_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnAuthFacebook" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="2dp" android:src="@drawable/facebook_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnAuthYahoo" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/yahoo_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnAuthApple" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/apple_logo" />
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- ================= STATE 3: FULL SIGN IN FORM ================= -->
+                <LinearLayout
+                    android:id="@+id/layoutSignInForm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp">
+
+                        <ImageView
+                            android:id="@+id/btnBackToAuthFromSignIn"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_back_arrow"
+                            app:tint="#FFFFFF" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Welcome Back"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <!-- THE PREMIUM SEGMENTED TOGGLE (Log In Active -> Grey Highlight) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <android.widget.Button
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_grey"
+                            android:text="Login"
+                            android:textAllCaps="false"
+                            android:textColor="#000000"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <android.widget.Button
+                            android:id="@+id/btnToggleToSignUp"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_black"
+                            android:text="Register"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Social Login Row for Form State -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView android:id="@+id/btnGoogleSignIn" android:layout_width="55dp" android:layout_height="55dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/google_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnFacebookSignIn" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="2dp" android:src="@drawable/facebook_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnYahooSignIn" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/yahoo_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnAppleSignIn" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/apple_logo" />
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center"
+                        android:text="or with Email"
+                        android:textColor="#B0B0B0"
+                        android:textSize="12sp" />
+
+                    <!-- Inputs -->
+                    <EditText
+                        android:id="@+id/etSignInEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/bg_container"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress"
+                        android:paddingHorizontal="20dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#80FFFFFF" />
+
+                    <EditText
+                        android:id="@+id/etSignInPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_container"
+                        android:hint="Password (If registered)"
+                        android:inputType="textPassword"
+                        android:paddingHorizontal="20dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#80FFFFFF" />
+
+                    <!-- Forgot Password Utility -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal"
+                        android:gravity="end|center_vertical">
+
+                        <TextView
+                            android:id="@+id/tvForgotSignIn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Forgot Password?"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+
+                    <!-- The Log In Action Button (Grey) -->
+                    <android.widget.Button
+                        android:id="@+id/btnDoSignIn"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="25dp"
+                        android:background="@drawable/bg_btn_grey"
+                        android:text="Login"
+                        android:textAllCaps="false"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Login Security Text -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:text="Protected by industry-standard encryption. By logging in, you reaffirm your agreement to our Terms &amp; Policies."
+                        android:textColor="#B0B0B0"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+                <!-- ================= STATE 4: FULL SIGN UP FORM ================= -->
+                <LinearLayout
+                    android:id="@+id/layoutSignUpForm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp">
+
+                        <ImageView
+                            android:id="@+id/btnBackToAuthFromSignUp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_back_arrow"
+                            app:tint="#FFFFFF" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Create Account"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <!-- THE PREMIUM SEGMENTED TOGGLE (Register Active -> Grey Highlight) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:orientation="horizontal">
+
+                        <android.widget.Button
+                            android:id="@+id/btnToggleToSignIn"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_black"
+                            android:text="Login"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <android.widget.Button
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_btn_grey"
+                            android:text="Register"
+                            android:textAllCaps="false"
+                            android:textColor="#000000"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Social Login Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView android:id="@+id/btnGoogleSignUp" android:layout_width="55dp" android:layout_height="55dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/google_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnFacebookSignUp" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="2dp" android:src="@drawable/facebook_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnYahooSignUp" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/yahoo_logo" />
+                        </androidx.cardview.widget.CardView>
+                        <androidx.cardview.widget.CardView android:id="@+id/btnAppleSignUp" android:layout_width="55dp" android:layout_height="55dp" android:layout_marginStart="15dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="27.5dp" android:clickable="true" android:focusable="true">
+                            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:src="@drawable/apple_logo" />
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center"
+                        android:text="or with Email"
+                        android:textColor="#B0B0B0"
+                        android:textSize="12sp" />
+
+                    <!-- Inputs -->
+                    <EditText
+                        android:id="@+id/etSignUpName"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/bg_container"
+                        android:hint="Full Name"
+                        android:inputType="textPersonName|textCapWords"
+                        android:paddingHorizontal="20dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#80FFFFFF" />
+
+                    <EditText
+                        android:id="@+id/etSignUpEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_container"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress"
+                        android:paddingHorizontal="20dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#80FFFFFF" />
+
+                    <EditText
+                        android:id="@+id/etSignUpPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_container"
+                        android:hint="Create Password"
+                        android:inputType="textPassword"
+                        android:paddingHorizontal="20dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#80FFFFFF" />
+
+                    <!-- Perfectly Rounded Compliance Toggles with reduced gaps -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="0dp">
+                            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#FFFFFF" android:scaleX="0.8" android:scaleY="0.8"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="I agree to Tutrnav's Terms of Service and Privacy Policy. *" android:textColor="#B0B0B0" android:textSize="11sp" android:layout_marginStart="-4dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="0dp">
+                            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#FFFFFF" android:scaleX="0.8" android:scaleY="0.8"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="I pledge to uphold the Community Guidelines for a safe learning environment. *" android:textColor="#B0B0B0" android:textSize="11sp" android:layout_marginStart="-4dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:buttonTint="#FFFFFF" android:scaleX="0.8" android:scaleY="0.8"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Send me personalized recommendations and updates. (Optional)" android:textColor="#B0B0B0" android:textSize="11sp" android:layout_marginStart="-4dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- The Register Action Button (Black) -->
+                    <android.widget.Button
+                        android:id="@+id/btnDoSignUp"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/bg_btn_grey"
+                        android:text="Register"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
